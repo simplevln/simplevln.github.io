@@ -82,8 +82,19 @@ h1 span { color: #756ee0; }
 .hero-stats span { display: block; margin-top: 9px; color: var(--muted); font-size: 13px; font-weight: 700; }
 .paper-figure { margin: 50px auto 0; }
 .paper-figure img { width: 100%; border: 2px solid var(--line); border-radius: 16px 12px 15px 11px; background: white; }
+.pdf-frame { width: 100%; overflow: hidden; background: #fff; border: 2px solid var(--line); border-radius: 16px 12px 15px 11px; }
+.pdf-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.ratio-fig1 { aspect-ratio: 402 / 189; }
+.ratio-framework { aspect-ratio: 665 / 387; }
+.ratio-pipeline { aspect-ratio: 1362 / 801; }
+.ratio-mem { aspect-ratio: 162 / 105; }
+.ratio-rl { aspect-ratio: 162 / 130; }
+.ratio-qual { aspect-ratio: 1153 / 854; }
+.pdf-row { display: grid; gap: 12px; }
+.pdf-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.pdf-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
 .hero-figure { max-width: 960px; padding: 18px; background: #f0efff; border: 2px solid #d3d0fa; border-radius: 22px 17px 21px 18px; }
-.hero-figure img { border: 0; border-radius: 7px; }
+.hero-figure img, .hero-figure .pdf-frame { border: 0; border-radius: 7px; }
 .paper-figure.large { max-width: 1000px; }
 .paper-figure figcaption { margin: 16px 4px 0; color: #4b5160; font-size: 15px; line-height: 1.6; text-align: left; }
 .paper-figure figcaption strong { color: var(--ink); font-weight: 800; }
@@ -143,7 +154,7 @@ h2 { margin: 0; font-family: "Patrick Hand", cursive; font-size: clamp(40px, 5vw
 .backbones b { color: var(--ink); font-size: 16px; }
 .backbones i { color: #756ee0; font-style: normal; }
 .examples .paper-figure { padding: 18px; background: #fff2e7; border: 2px solid #f4d1b3; border-radius: 20px 15px 19px 14px; }
-.examples .paper-figure img { border: 0; border-radius: 7px; }
+.examples .paper-figure img, .examples .paper-figure .pdf-frame { border: 0; border-radius: 7px; }
 .abstract { display: grid; grid-template-columns: 1fr 2.1fr; gap: 90px; border-top: 1px solid var(--line); }
 .abstract-copy { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
 .abstract-copy p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.75; }
@@ -174,6 +185,7 @@ h2 { margin: 0; font-family: "Patrick Hand", cursive; font-size: clamp(40px, 5vw
   text-align: center;
 }
 .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.demo-card.place-last { grid-column: 1 / -1; width: calc((100% - 22px) / 2); margin-inline: auto; }
 .demo-card {
   margin: 0;
   background: #fff;
@@ -213,8 +225,7 @@ th { background: #f4f7fc; font-size: 12px; letter-spacing: .02em; }
 td:first-child, th:first-child { text-align: left; }
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: #f8f6ff; }
-tr.ours { background: #eef2ff; }
-tr.ours.best { background: #fff3df; }
+tr.ours, tr.ours.best { background: #eef2ff; }
 .ablation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .ablation-grid .table-scroll, .ablation-grid table { border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
 .ablation-grid caption {
@@ -264,6 +275,8 @@ tr.ours.best { background: #fff3df; }
   .citation footer { grid-template-columns: 1fr auto; }
   .citation footer p { display: none; }
   .demo-grid { grid-template-columns: 1fr; }
+  .demo-card.place-last { width: 100%; }
+  .pdf-row.cols-2, .pdf-row.cols-3 { grid-template-columns: 1fr; }
   .video-caption { align-items: flex-start; flex-direction: column; gap: 8px; }
   .video-caption p { text-align: left; }
 }
