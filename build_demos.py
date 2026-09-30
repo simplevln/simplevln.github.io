@@ -32,7 +32,7 @@ SIM_ROOT = Path(r"E:\code\pass4_videos\pass4")
 OUT_W, OUT_H = 1280, 720
 OUT_FPS = 15
 PIP_W, PIP_H = 420, 315
-PIP_RADIUS = 16
+PIP_RADIUS = 22
 PIP_MARGIN = 14
 PIP_RED = (96, 86, 255)  # BGR, coral red border
 STOP_HOLD = 10
@@ -602,7 +602,7 @@ def _gradient_sprite(mask: np.ndarray) -> np.ndarray:
     """Fill a shape with #E5CCFF → #CCFFFF and a thin dark edge."""
     height, width = mask.shape
     sprite = np.zeros((height, width, 4), np.uint8)
-    ramp = np.linspace(0, 1, height, dtype=np.float32)[:, None]
+    ramp = np.linspace(0, 1, height, dtype=np.float32)[:, None, None]
     top = np.array(GRAD_TOP, np.float32)
     bottom = np.array(GRAD_BOT, np.float32)
     rgb = top * (1 - ramp) + bottom * ramp
@@ -642,20 +642,18 @@ def _straight_mask(pointing: str) -> np.ndarray:
 
 def _turn_mask(direction: str) -> np.ndarray:
     """Curved arrow, matching the hooked turn glyph. Head points left or right."""
-    height, width = 250, 250
+    height, width = 270, 270
     mask = np.zeros((height, width), np.uint8)
-    thickness = 46
-    center = (168, 118)
-    radius = 78
-    cv2.line(mask, (center[0], center[1]), (center[0], 228), 255, thickness, cv2.LINE_AA)
-    cv2.ellipse(mask, center, (radius, radius), 0, 90, 180, 255, thickness, cv2.LINE_AA)
-    tip_x = center[0] - radius - 34
-    tip_y = center[1]
+    thickness = 48
+    cx, cy, radius = 180, 100, 74
+    cv2.ellipse(mask, (cx, cy), (radius, radius), 0, 90, 180, 255, thickness, cv2.LINE_AA)
+    cv2.line(mask, (cx, cy + radius - 10), (cx, 252), 255, thickness, cv2.LINE_AA)
+    tip_x = cx - radius - 38
     head = np.array(
         [
-            [tip_x, tip_y],
-            [center[0] - radius + 16, tip_y - 40],
-            [center[0] - radius + 16, tip_y + 40],
+            [tip_x, cy],
+            [cx - radius + 20, cy - 44],
+            [cx - radius + 20, cy + 44],
         ],
         np.int32,
     )
@@ -736,27 +734,38 @@ def compose_real(spec: dict, preview: bool) -> None:
     out_path = OUT / f"{spec['id']}.mp4"
     poster_path = OUT / f"{spec['id']}.jpg"
 
+    clip_start = float(spec["clip_start"])
+    clip_end = float(spec["clip_end"])
+
+    def decorate(frame: np.ndarray, t: float, ending: bool = False) -> np.ndarray:
+        improve_frame(frame, spec, people)
+        blend(frame, overlay)
+        kind = still_at(actions, t)
+        if ending or kind == "stop":
+            paint_stop(frame)
+        else:
+            paint_arrow(frame, kind)
+        pip = still_at(bank, t)
+        if pip is not None:
+            place_pip(frame, pip)
+        return frame
+
     if preview:
         cap.release()
         cap = cv2.VideoCapture(str(spec["mov"]))
         preview_dir = ROOT / "_preview"
         preview_dir.mkdir(exist_ok=True)
-        times = [30.0, spec["duration"] * 0.5, min(220.0, spec["duration"] * 0.8)]
+        times = [clip_start + 0.4, (clip_start + clip_end) * 0.5, max(clip_start, clip_end - 1.5)]
         for n, t in enumerate(times):
             cap.set(cv2.CAP_PROP_POS_MSEC, t * 1000)
             ok, frame = cap.read()
             if not ok:
                 continue
             frame = cv2.resize(frame, (OUT_W, OUT_H), interpolation=cv2.INTER_AREA)
-            improve_frame(frame, spec, people)
-            blend(frame, overlay)
-            paint_arrow(frame, still_at(actions, t))
-            pip = still_at(bank, t)
-            if pip is not None:
-                place_pip(frame, pip)
+            decorate(frame, t, ending=(n == len(times) - 1))
             dest = preview_dir / f"align_{spec['id']}_{n}.jpg"
             cv2.imwrite(str(dest), frame)
-            print("preview", dest.name, f"t={t:.1f}s")
+            print("preview", dest.name, f"t={t:.1f}s", flush=True)
         cap.release()
         return
 
@@ -773,10 +782,13 @@ def compose_real(spec: dict, preview: bool) -> None:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE,
     )
-    next_src = 0.0
-    src_i = 0
+    cap.set(cv2.CAP_PROP_POS_FRAMES, max(0, int(clip_start * src_fps) - 1))
+    src_i = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+    next_src = clip_start * src_fps
     written = 0
     poster_saved = False
+    last_base = None
+    last_t = clip_end
     try:
         while True:
             if not cap.grab():
@@ -786,17 +798,14 @@ def compose_real(spec: dict, preview: bool) -> None:
                 if not ok:
                     break
                 t = src_i / src_fps
-                if t > spec["duration"]:
+                if t > clip_end:
                     break
                 frame = cv2.resize(frame, (OUT_W, OUT_H), interpolation=cv2.INTER_AREA)
-                improve_frame(frame, spec, people)
-                blend(frame, overlay)
-                paint_arrow(frame, still_at(actions, t))
-                pip = still_at(bank, t)
-                if pip is not None:
-                    place_pip(frame, pip)
+                last_base = frame.copy()
+                last_t = t
+                decorate(frame, t)
                 proc.stdin.write(frame.tobytes())
-                if not poster_saved and t > min(8.0, spec["duration"] * 0.25):
+                if not poster_saved and t > min(clip_start + 4.0, clip_start + (clip_end - clip_start) * 0.25):
                     cv2.imwrite(str(poster_path), frame, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
                     poster_saved = True
                 written += 1
@@ -804,6 +813,17 @@ def compose_real(spec: dict, preview: bool) -> None:
                 if written % 150 == 0:
                     print(f"  {spec['id']} {written} frames ({t:.0f}s src)", flush=True)
             src_i += 1
+        if last_base is not None:
+            ending = last_base
+            improve_frame(ending, spec, people)
+            blend(ending, overlay)
+            paint_stop(ending)
+            pip = still_at(bank, last_t)
+            if pip is not None:
+                place_pip(ending, pip)
+            for _ in range(STOP_HOLD):
+                proc.stdin.write(ending.tobytes())
+                written += 1
     finally:
         cap.release()
         proc.stdin.close()
@@ -837,6 +857,11 @@ def encode_sim(spec: dict) -> None:
     print("wrote", dest.name)
 
 
+def _compose_job(spec: dict) -> str:
+    compose_real(spec, preview=False)
+    return spec["id"]
+
+
 def main() -> None:
     preview = "--preview" in sys.argv
     reals_only = "--reals" in sys.argv
@@ -851,13 +876,24 @@ def main() -> None:
         for spec in specs:
             compose_real(spec, preview=True)
         return
+    for stale in ("real-window.mp4", "real-window.jpg"):
+        path = OUT / stale
+        if path.is_file() and (only is None or only == "real-office"):
+            path.unlink()
     if not reals_only:
         for spec in SIMS:
             if not spec["src"].is_file():
                 raise FileNotFoundError(spec["src"])
             encode_sim(spec)
-    for spec in specs:
-        compose_real(spec, preview=False)
+    workers = 1 if len(specs) < 2 else max(2, min(len(specs), os.cpu_count() or 2, 4))
+    print(f"encoding {len(specs)} clips on {workers} workers", flush=True)
+    if workers == 1:
+        for spec in specs:
+            compose_real(spec, preview=False)
+        return
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        for name in pool.map(_compose_job, specs):
+            print("finished", name, flush=True)
 
 
 if __name__ == "__main__":
