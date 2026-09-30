@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SimpleVLN unlocks native MLLMs for vision-language navigation without task-specific architectural designs.">
+  <meta name="theme-color" content="#fffefd">
+  <title>SimpleVLN — Native MLLMs for Vision-Language Navigation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Nunito:wght@400;500;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="nav">
+    <a class="wordmark" href="#top" aria-label="SimpleVLN home">
+      <span class="mark">S</span><span>SimpleVLN</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#video">Video</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#ablation">Ablation</a>
+      <a href="#examples">Examples</a>
+      <a href="#citation">Citation</a>
+    </nav>
+    <a class="nav-paper" href="assets/paper.pdf">Paper <span>↗</span></a>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="eyebrow"><span></span> ICLR 2027 · Under Review</div>
+      <h1>Towards <em>Simple</em> and <span>Frontier</span><br>Vision-Language Navigation</h1>
+      <p class="authors">
+        Lingyi Hong<sup>1,*,&dagger;</sup>,
+        Weiren Cai<sup>2,*</sup>,
+        Jiayu Chen<sup>1,*</sup>,
+        Xinyu Zhou<sup>2,&dagger;,&Dagger;</sup>,
+        Bailin He<sup>1</sup>,
+        Yunfei Guo<sup>1</sup>,
+        Qiao Sun<sup>3</sup>,
+        Xiang Liu<sup>1</sup>,
+        Boyu Ma<sup>2</sup>,
+        Jianfei Yang<sup>2</sup>,
+        Wenqiang Zhang<sup>1</sup>
+      </p>
+      <p class="affiliations">
+        <span><sup>1</sup> Fudan University</span>
+        <span><sup>2</sup> Nanyang Technological University</span>
+        <span><sup>3</sup> Lenovo Group Limited</span>
+      </p>
+      <p class="author-note">* Equal contribution &nbsp;·&nbsp; &dagger; Joint project leaders &nbsp;·&nbsp; &Dagger; Corresponding author</p>
+      <p class="hero-copy">
+        How far can a native multimodal large language model go in VLN—
+        <strong>before</strong> introducing task-specific architecture?
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="assets/paper.pdf"><span class="button-icon">↓</span> Read the paper</a>
+        <span class="button muted" title="Code will be released after review"><span class="button-icon">&lt;/&gt;</span> Code · Coming soon</span>
+      </div>
+      <div class="hero-stats hero-stats-3" aria-label="Headline results">
+        <div><strong>76.7<small>%</small></strong><span>R2R-CE Success Rate</span></div>
+        <div><strong>80.1<small>%</small></strong><span>RxR-CE Success Rate</span></div>
+        <div><strong>293<small>ms</small></strong><span>Per Action-Chunk Decision</span></div>
+      </div>
+      <figure class="paper-figure hero-figure reveal">
+        <img src="assets/fig1-motivation.png" alt="Motivation and performance comparison of SimpleVLN">
+        <figcaption>Figure 1: Motivation and performance comparison of SimpleVLN. (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
+      </figure>
+    </section>
+
+    <section class="statement" aria-label="Core idea">
+      <p class="statement-lead">Three levers. One native MLLM.</p>
+      <div class="recipe">
+        <span>Formulation</span>
+        <i></i>
+        <span>Data</span>
+        <i></i>
+        <span>Optimization</span>
+      </div>
+    </section>
+
+    <section class="section video-section" id="video">
+      <div class="section-label">01 — Demos</div>
+      <div class="split-heading">
+        <h2>From language<br>to <em>motion.</em></h2>
+        <p>Simulation pairs the onboard view with its map. Real-world runs show the robot navigating from live visual instructions.</p>
+      </div>
+
+      <div class="demo-block">
+        <h3 class="demo-kicker">Simulation</h3>
+        <div class="demo-grid">
+          <figure class="demo-card sim reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-foyer.jpg" aria-label="Foyer simulation">
+              <source src="assets/demos/sim-foyer.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Foyer</strong></figcaption>
+          </figure>
+          <figure class="demo-card sim reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-living.jpg" aria-label="Living room simulation">
+              <source src="assets/demos/sim-living.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Living room</strong></figcaption>
+          </figure>
+          <figure class="demo-card sim reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-gallery.jpg" aria-label="Gallery simulation">
+              <source src="assets/demos/sim-gallery.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Gallery</strong></figcaption>
+          </figure>
+          <figure class="demo-card sim reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-kitchen.jpg" aria-label="Kitchen simulation">
+              <source src="assets/demos/sim-kitchen.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Kitchen</strong></figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="demo-block">
+        <h3 class="demo-kicker">Real world</h3>
+        <div class="demo-grid">
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-pillar.jpg" aria-label="Yellow pillar, 4 times speed">
+              <source src="assets/demos/real-pillar.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Yellow pillar</strong><span>Stop next to the yellow pillar</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-kfc.jpg" aria-label="KFC entrance, 2 times speed">
+              <source src="assets/demos/real-kfc.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>KFC entrance</strong><span>Walk to the KFC entrance and stop</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-vending.jpg" aria-label="Vending machine, 4 times speed">
+              <source src="assets/demos/real-vending.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Vending machine</strong><span>Turn left at the yellow bench</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-path.jpg" aria-label="Outdoor path, 2 times speed">
+              <source src="assets/demos/real-path.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Outdoor path</strong><span>Follow the stone path to the fitness area</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-follow.jpg" aria-label="Follow the person, 4 times speed">
+              <source src="assets/demos/real-follow.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Follow the person</strong><span>Spot the person in black and follow</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-car.jpg" aria-label="Red car, 4 times speed">
+              <source src="assets/demos/real-car.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Red car</strong><span>Avoid the pillar and stop at the red car</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-office.jpg" aria-label="Office hallway">
+              <source src="assets/demos/real-office.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Office hallway</strong><span>Enter the first room after the turn</span></figcaption>
+          </figure>
+          <figure class="demo-card reveal">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-window.jpg" aria-label="Window corridor">
+              <source src="assets/demos/real-window.mp4" type="video/mp4">
+            </video>
+            <figcaption><strong>Window corridor</strong><span>Turn left and enter the first room</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section intro" id="method">
+      <div class="section-label">02 — Approach</div>
+      <div class="split-heading">
+        <h2>Keep the model.<br>Change the <em>recipe.</em></h2>
+        <p>SimpleVLN directly adapts off-the-shelf MLLMs to sequential navigation. No graph planner, no specialized spatial encoder, and no dual-system controller.</p>
+      </div>
+
+      <figure class="paper-figure large reveal">
+        <img src="assets/framework-hd.png" alt="Overview of SimpleVLN">
+        <figcaption>Figure 2: Overview of SimpleVLN. At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
+      </figure>
+
+      <div class="pillars">
+        <article>
+          <div class="pillar-top"><span>01</span><b>Formulation</b></div>
+          <h3>Bounded context,<br>unbounded horizon.</h3>
+          <p>Single-turn decision inputs prevent context growth. Global–local history keeps route coverage and recent continuity within a fixed visual budget.</p>
+          <ul>
+            <li>Single-turn decisions</li>
+            <li>8 global + 1 local frame</li>
+            <li>Action-chunk prediction</li>
+          </ul>
+        </article>
+        <article>
+          <div class="pillar-top"><span>02</span><b>Data</b></div>
+          <h3>Learn from experts.<br>Recover from mistakes.</h3>
+          <p>Expert demonstrations are expanded with policy-induced DAgger experience and newly synthesized navigation tasks for interaction-based learning.</p>
+          <ul>
+            <li>R2R + RxR + ScaleVLN</li>
+            <li>Policy-dependent DAgger</li>
+            <li>Scalable task synthesis</li>
+          </ul>
+        </article>
+        <article>
+          <div class="pillar-top"><span>03</span><b>Optimization</b></div>
+          <h3>From action imitation<br>to task completion.</h3>
+          <p>A progressive post-training pipeline shifts the learning signal from demonstrated actions to binary, episode-level success feedback.</p>
+          <ul>
+            <li>Imitation learning</li>
+            <li>Supervised adaptation</li>
+            <li>Outcome-driven RL</li>
+          </ul>
+        </article>
+      </div>
+
+      <figure class="paper-figure large reveal">
+        <img src="assets/pipeline-hd.png" alt="Training pipeline of SimpleVLN">
+        <figcaption>Figure 3: Training data pipeline of SimpleVLN. SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
+      </figure>
+    </section>
+
+    <section class="results" id="results">
+      <div class="section">
+        <div class="section-label light">03 — Results</div>
+        <div class="split-heading">
+          <h2>Simple scales.<br><em>Results speak.</em></h2>
+          <p>Across backbone families and model sizes, reinforcement learning consistently unlocks stronger navigation. The 9B model sets a new high-water mark on both VLN-CE benchmarks.</p>
+        </div>
+        <div class="score-grid">
+          <article>
+            <header><span>R2R-CE</span><small>val-unseen · SR ↑</small></header>
+            <div class="score"><b>76.7</b><i>%</i></div>
+            <div class="bar"><span style="--value:95.9%"></span></div>
+            <footer><span>Previous best</span><b>73.2</b></footer>
+          </article>
+          <article>
+            <header><span>RxR-CE</span><small>val-unseen · SR ↑</small></header>
+            <div class="score"><b>80.1</b><i>%</i></div>
+            <div class="bar"><span style="--value:100%"></span></div>
+            <footer><span>Previous best</span><b>75.6</b></footer>
+          </article>
+          <article class="latency">
+            <header><span>Fast by design</span><small>A100 · model execution</small></header>
+            <div class="score"><b>293</b><i>ms</i></div>
+            <p>Comparable to StreamVLN, while delivering <strong>+16.9</strong> SR on R2R-CE.</p>
+          </article>
+        </div>
+        <div class="backbones">
+          <span>Validated across</span>
+          <b>Qwen2.5-VL</b><i>→</i><b>Qwen3-VL</b><i>→</i><b>Qwen3.5</b>
+        </div>
+
+        <div class="table-block reveal">
+          <h3>Table 1: Comparison with state-of-the-art methods on the R2R-CE and RxR-CE val-unseen splits.</h3>
+          <p>&dagger; and * denote SimpleVLN before and after RL, respectively.</p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th rowspan="2">Method</th>
+                  <th rowspan="2">Size</th>
+                  <th colspan="4">Observation</th>
+                  <th colspan="4">R2R-CE</th>
+                  <th colspan="4">RxR-CE</th>
+                </tr>
+                <tr>
+                  <th>Pano.</th><th>Odo.</th><th>Depth</th><th>S.RGB</th>
+                  <th>NE↓</th><th>OS↑</th><th>SR↑</th><th>SPL↑</th>
+                  <th>NE↓</th><th>SR↑</th><th>SPL↑</th><th>nDTW↑</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>NaVid</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>5.47</td><td>49.1</td><td>37.4</td><td>35.9</td><td>8.41</td><td>23.8</td><td>21.2</td><td>—</td></tr>
+                <tr><td>Uni-NaVid</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>5.58</td><td>53.3</td><td>47.0</td><td>42.7</td><td>6.24</td><td>48.7</td><td>40.9</td><td>—</td></tr>
+                <tr><td>NaVILA</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>5.22</td><td>62.5</td><td>54.0</td><td>49.0</td><td>6.77</td><td>49.3</td><td>44.0</td><td>58.8</td></tr>
+                <tr><td>ActiveVLN</td><td>3B</td><td></td><td></td><td></td><td class="check">✓</td><td>5.31</td><td>58.3</td><td>50.1</td><td>43.7</td><td>5.84</td><td>50.7</td><td>41.2</td><td>58.1</td></tr>
+                <tr><td>StreamVLN</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.98</td><td>64.2</td><td>56.9</td><td>51.9</td><td>6.22</td><td>52.9</td><td>46.0</td><td>61.9</td></tr>
+                <tr><td>NavFoM</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>5.01</td><td>64.9</td><td>56.2</td><td>51.2</td><td>5.51</td><td>57.4</td><td>49.4</td><td>60.2</td></tr>
+                <tr><td>JanusVLN</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.78</td><td>65.2</td><td>60.5</td><td>56.8</td><td>6.06</td><td>56.2</td><td>47.5</td><td>62.1</td></tr>
+                <tr><td>NaVIDA</td><td>3B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.32</td><td>69.5</td><td>61.4</td><td>54.7</td><td>5.23</td><td>57.4</td><td>49.6</td><td>67.0</td></tr>
+                <tr><td>CorrectNav</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.24</td><td>67.5</td><td>65.1</td><td>62.3</td><td>4.09</td><td>69.3</td><td>63.3</td><td>75.2</td></tr>
+                <tr><td>DualVLN</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.05</td><td>70.7</td><td>64.3</td><td>58.5</td><td>4.58</td><td>61.4</td><td>51.8</td><td>70.0</td></tr>
+                <tr><td>FutureNav</td><td>4B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.24</td><td>70.2</td><td>65.4</td><td>61.3</td><td>4.60</td><td>60.9</td><td>52.8</td><td>68.0</td></tr>
+                <tr><td>FutureNav</td><td>8B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.29</td><td>69.2</td><td>64.3</td><td>60.3</td><td>4.26</td><td>63.9</td><td>54.8</td><td>69.1</td></tr>
+                <tr><td>AgentVLN</td><td>3B</td><td></td><td></td><td class="check">✓</td><td class="check">✓</td><td>3.88</td><td>73.5</td><td>67.2</td><td>64.7</td><td>3.92</td><td>69.5</td><td>61.3</td><td>74.6</td></tr>
+                <tr><td>OmniNav</td><td>3B</td><td class="check">✓</td><td></td><td></td><td></td><td>3.74</td><td>74.6</td><td>69.5</td><td>66.1</td><td>3.77</td><td>73.6</td><td>62.0</td><td>—</td></tr>
+                <tr><td>SEDualVLN</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>3.75</td><td>73.7</td><td>67.3</td><td>62.5</td><td>4.12</td><td>63.9</td><td>52.4</td><td>72.8</td></tr>
+                <tr><td>Qwen-RobotNav</td><td>4B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.22</td><td>73.6</td><td>66.9</td><td>60.5</td><td>4.15</td><td>71.3</td><td>61.5</td><td>68.6</td></tr>
+                <tr><td>Qwen-RobotNav</td><td>8B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.36</td><td>72.7</td><td>65.7</td><td>59.6</td><td>4.16</td><td>73.4</td><td>63.5</td><td>69.9</td></tr>
+                <tr><td>Qwen-RobotNav</td><td>4B</td><td class="check">✓</td><td></td><td></td><td></td><td>3.80</td><td>77.2</td><td>69.5</td><td>63.6</td><td>3.80</td><td>75.2</td><td>65.0</td><td>71.9</td></tr>
+                <tr><td>Qwen-RobotNav</td><td>8B</td><td class="check">✓</td><td></td><td></td><td></td><td>3.53</td><td>78.5</td><td>72.1</td><td>66.6</td><td>3.58</td><td>76.5</td><td>65.7</td><td>72.5</td></tr>
+                <tr><td>Efficient-VLN</td><td>8B</td><td></td><td></td><td></td><td class="check">✓</td><td>3.29</td><td>78.2</td><td>73.2</td><td>65.0</td><td>3.18</td><td>75.6</td><td>60.0</td><td>—</td></tr>
+                <tr class="ours"><td>SimpleVLN† (Qwen2.5-VL)</td><td>3B</td><td></td><td></td><td></td><td class="check">✓</td><td>5.70</td><td>63.3</td><td>51.6</td><td>44.9</td><td>5.20</td><td>50.3</td><td>42.0</td><td>57.6</td></tr>
+                <tr class="ours"><td>SimpleVLN† (Qwen2.5-VL)</td><td>7B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.87</td><td>68.4</td><td>59.1</td><td>52.0</td><td>5.31</td><td>58.9</td><td>49.2</td><td>62.9</td></tr>
+                <tr class="ours"><td>SimpleVLN† (Qwen3-VL)</td><td>4B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.26</td><td>74.3</td><td>65.4</td><td>58.8</td><td>4.79</td><td>63.4</td><td>54.1</td><td>66.5</td></tr>
+                <tr class="ours"><td>SimpleVLN* (Qwen3-VL)</td><td>4B</td><td></td><td></td><td></td><td class="check">✓</td><td>3.39</td><td>79.4</td><td>73.8</td><td>66.7</td><td>3.29</td><td>75.1</td><td>65.3</td><td>71.5</td></tr>
+                <tr class="ours"><td>SimpleVLN† (Qwen3-VL)</td><td>8B</td><td></td><td></td><td></td><td class="check">✓</td><td>4.40</td><td>73.3</td><td>64.2</td><td>57.0</td><td>4.73</td><td>64.2</td><td>54.3</td><td>66.2</td></tr>
+                <tr class="ours"><td>SimpleVLN* (Qwen3-VL)</td><td>8B</td><td></td><td></td><td></td><td class="check">✓</td><td>2.93</td><td>79.2</td><td>74.4</td><td>69.5</td><td>3.11</td><td>76.4</td><td>66.4</td><td>77.4</td></tr>
+                <tr class="ours"><td>SimpleVLN† (Qwen3.5)</td><td>4B</td><td></td><td></td><td></td><td class="check">✓</td><td>3.76</td><td>77.5</td><td>67.1</td><td>59.2</td><td>4.32</td><td>65.6</td><td>55.3</td><td>67.8</td></tr>
+                <tr class="ours"><td>SimpleVLN* (Qwen3.5)</td><td>4B</td><td></td><td></td><td></td><td class="check">✓</td><td>2.79</td><td>80.1</td><td>76.3</td><td>72.3</td><td>2.61</td><td>79.2</td><td>69.7</td><td>80.3</td></tr>
+                <tr class="ours"><td>SimpleVLN† (Qwen3.5)</td><td>9B</td><td></td><td></td><td></td><td class="check">✓</td><td>3.59</td><td>76.9</td><td>69.2</td><td>61.2</td><td>4.48</td><td>64.0</td><td>54.2</td><td>67.0</td></tr>
+                <tr class="ours best"><td>SimpleVLN* (Qwen3.5)</td><td>9B</td><td></td><td></td><td></td><td class="check">✓</td><td><b>2.63</b></td><td><b>84.1</b></td><td><b>76.7</b></td><td><b>72.6</b></td><td><b>2.51</b></td><td><b>80.1</b></td><td><b>69.9</b></td><td><b>79.8</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="table-block reveal">
+          <h3>Table 2: Comparison with state-of-the-art methods on inference latency and navigation performance.</h3>
+          <p>Latency is measured on R2R-CE using the same NVIDIA A100 GPU, and measures model execution only for one action-chunk decision, excluding preprocessing, environment execution, and other non-model overhead. SimpleVLN uses Qwen3-VL-4B as its backbone.</p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th rowspan="2">Method</th>
+                  <th rowspan="2">Size</th>
+                  <th rowspan="2">Latency (ms)↓</th>
+                  <th colspan="4">R2R-CE</th>
+                  <th colspan="4">RxR-CE</th>
+                </tr>
+                <tr>
+                  <th>NE↓</th><th>OS↑</th><th>SR↑</th><th>SPL↑</th>
+                  <th>NE↓</th><th>SR↑</th><th>SPL↑</th><th>nDTW↑</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>StreamVLN</td><td>7B</td><td>300</td><td>4.98</td><td>64.2</td><td>56.9</td><td>51.9</td><td>6.22</td><td>52.9</td><td>46.0</td><td>61.9</td></tr>
+                <tr><td>JanusVLN</td><td>7B</td><td>906</td><td>4.78</td><td>65.2</td><td>60.5</td><td>56.8</td><td>6.06</td><td>56.2</td><td>47.5</td><td>62.1</td></tr>
+                <tr><td>DualVLN</td><td>7B</td><td>683</td><td>4.05</td><td>70.7</td><td>64.3</td><td>58.5</td><td>4.58</td><td>61.4</td><td>51.8</td><td>70.0</td></tr>
+                <tr><td>FutureNav</td><td>4B</td><td>1141</td><td>4.24</td><td>70.2</td><td>65.4</td><td>61.3</td><td>4.60</td><td>60.9</td><td>52.8</td><td>68.0</td></tr>
+                <tr class="ours best"><td>SimpleVLN</td><td>4B</td><td><b>293</b></td><td><b>3.39</b></td><td><b>79.4</b></td><td><b>73.8</b></td><td><b>66.7</b></td><td><b>3.29</b></td><td><b>75.1</b></td><td><b>65.3</b></td><td><b>71.5</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ablation" id="ablation">
+      <div class="section-label">04 — Ablation</div>
+      <div class="split-heading">
+        <h2>Each lever<br>earns its <em>place.</em></h2>
+        <p>StreamVLN shows a data recipe on its project page; FutureNav and DualVLN keep ablations in the paper. We surface them here because they are the evidence for formulation, data, and optimization.</p>
+      </div>
+
+      <div class="table-block reveal">
+        <h3>Table 3: Navigation interface and memory design.</h3>
+        <p>Ablations of action chunking, single-turn navigation, and observation sampling using Qwen3-VL 4B fine-tuned on R2R. The default design of SimpleVLN is shaded.</p>
+        <div class="ablation-grid">
+          <table>
+            <caption>Action format</caption>
+            <thead><tr><th>Action format</th><th>NE↓</th><th>OS↑</th><th>SR↑</th></tr></thead>
+            <tbody>
+              <tr><td>Primitive action</td><td>5.2</td><td>54.5</td><td>45.6</td></tr>
+              <tr class="ours"><td>Action chunk</td><td>5.5</td><td>61.2</td><td>53.6</td></tr>
+            </tbody>
+          </table>
+          <table>
+            <caption>Dialogue format</caption>
+            <thead><tr><th>Dialogue format</th><th>NE↓</th><th>OS↑</th><th>SR↑</th></tr></thead>
+            <tbody>
+              <tr><td>Multi-turn</td><td>5.9</td><td>55.2</td><td>35.7</td></tr>
+              <tr class="ours"><td>Single-turn</td><td>5.5</td><td>61.2</td><td>53.6</td></tr>
+            </tbody>
+          </table>
+          <table>
+            <caption>Observation sampling</caption>
+            <thead><tr><th>Sampling scheme</th><th>NE↓</th><th>OS↑</th><th>SR↑</th></tr></thead>
+            <tbody>
+              <tr><td>Chunk</td><td>6.1</td><td>55.2</td><td>46.3</td></tr>
+              <tr><td>Primitive (all)</td><td>5.8</td><td>57.5</td><td>51.9</td></tr>
+              <tr class="ours"><td>Primitive (8)</td><td>5.5</td><td>61.2</td><td>53.6</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure class="paper-figure large reveal">
+        <img src="assets/fig4-memory.png" alt="Memory budget ablation">
+        <figcaption>Figure 4: Memory budget. Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
+      </figure>
+
+      <div class="table-block reveal">
+        <h3>Table 4: Demonstration and DAgger data ablation on the R2R-CE and RxR-CE val-unseen splits.</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>R2R</th><th>RxR</th><th>ScaleVLN</th><th>DAgger</th>
+                <th>R2R SR↑</th><th>R2R SPL↑</th>
+                <th>RxR SR↑</th><th>RxR SPL↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>✓</td><td></td><td></td><td></td><td>53.6</td><td>48.1</td><td>50.3</td><td>42.0</td></tr>
+              <tr><td>✓</td><td>✓</td><td></td><td></td><td>56.7</td><td>51.3</td><td>54.5</td><td>46.7</td></tr>
+              <tr><td>✓</td><td>✓</td><td>✓</td><td></td><td>57.9</td><td>50.9</td><td>55.3</td><td>48.1</td></tr>
+              <tr class="ours"><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>65.4</td><td>58.8</td><td>63.4</td><td>54.1</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-block reveal">
+        <h3>Table 5: Synthesized RL data ablation on the R2R-CE and RxR-CE val-unseen splits.</h3>
+        <p>Dataset columns identify the training-scene sources used to synthesize RL episodes.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>R2R</th><th>RxR</th><th>ScaleVLN</th>
+                <th>R2R SR↑</th><th>R2R SPL↑</th>
+                <th>RxR SR↑</th><th>RxR SPL↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="3">Pre-RL baseline</td><td>65.4</td><td>58.8</td><td>63.4</td><td>54.1</td></tr>
+              <tr><td>✓</td><td></td><td></td><td>68.5</td><td>63.2</td><td>65.8</td><td>55.3</td></tr>
+              <tr><td></td><td>✓</td><td></td><td>67.5</td><td>59.3</td><td>68.5</td><td>59.5</td></tr>
+              <tr><td></td><td></td><td>✓</td><td>66.6</td><td>61.3</td><td>66.3</td><td>56.2</td></tr>
+              <tr><td>✓</td><td>✓</td><td></td><td>69.4</td><td>63.8</td><td>69.7</td><td>60.8</td></tr>
+              <tr class="ours"><td>✓</td><td>✓</td><td>✓</td><td>70.1</td><td>65.6</td><td>71.0</td><td>62.1</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <figure class="paper-figure large reveal">
+        <img src="assets/fig5-rl.png" alt="RL training dynamics">
+        <figcaption>Figure 5: RL training dynamics. Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
+      </figure>
+
+      <div class="table-block reveal">
+        <h3>Table 6: Reward design and RL optimization on the R2R-CE and RxR-CE val-unseen splits with Qwen3-VL 4B.</h3>
+        <p>The SPL reward is zero for failed episodes and equals the ratio of the ground-truth path length to the executed path length for successful episodes; the success reward is binary.</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>RL configuration</th>
+                <th>R2R SR↑</th><th>R2R SPL↑</th>
+                <th>RxR SR↑</th><th>RxR SPL↑</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Pre-RL baseline</td><td>65.4</td><td>58.8</td><td>63.4</td><td>54.1</td></tr>
+              <tr><td>GRPO + SPL(τ)</td><td>68.9</td><td>63.1</td><td>67.7</td><td>58.3</td></tr>
+              <tr><td>GRPO + 𝟙(success)</td><td>70.1</td><td>65.6</td><td>71.0</td><td>62.1</td></tr>
+              <tr class="ours"><td>DAPO + 𝟙(success)</td><td>71.5</td><td>65.3</td><td>73.7</td><td>64.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section examples" id="examples">
+      <div class="section-label">05 — In the wild</div>
+      <div class="split-heading">
+        <h2>From simulation<br>to the <em>real world.</em></h2>
+        <p>SimpleVLN follows multi-step instructions on a Daystar quadruped and in unseen Habitat scenes, using only egocentric visual observations.</p>
+      </div>
+      <figure class="paper-figure large reveal">
+        <img src="assets/qualitative-full.png" alt="SimpleVLN qualitative results in real-world and simulated environments">
+        <figcaption>Figure 6: SimpleVLN in real-world and simulated environments. SimpleVLN follows diverse instructions and reaches the specified goals; arrows indicate navigation directions. (a) Qualitative results of SimpleVLN in the real world. (b) Qualitative results of SimpleVLN on Simulation.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section abstract">
+      <div class="section-label">06 — Abstract</div>
+      <div class="abstract-copy">
+        <p>Vision-and-Language Navigation requires embodied agents to ground language in visual observations and make long-horizon decisions. Existing methods often address these demands through task-specific architectures.</p>
+        <p>We present <strong>SimpleVLN</strong>, an architecture-preserving framework developed through studies of navigation formulation, data construction, and optimization. Comprehensive experiments show that the navigation capabilities of native MLLMs can be effectively unlocked without task-specific architectural designs.</p>
+      </div>
+    </section>
+
+    <section class="citation" id="citation">
+      <div class="section">
+        <div class="section-label light">07 — Citation</div>
+        <div class="citation-head">
+          <h2>Built simple.<br>Made to <em>advance.</em></h2>
+          <button id="copy-citation" type="button">Copy BibTeX</button>
+        </div>
+        <pre><code id="bibtex">@article{hong2027simplevln,
+  title   = {SimpleVLN: Towards Simple and Frontier
+             Vision-Language Navigation},
+  author  = {Hong, Lingyi and Cai, Weiren and Chen, Jiayu
+             and Zhou, Xinyu and He, Bailin and Guo, Yunfei
+             and Sun, Qiao and Liu, Xiang and Ma, Boyu
+             and Yang, Jianfei and Zhang, Wenqiang},
+  journal = {Under review at ICLR},
+  year    = {2027}
+}</code></pre>
+        <footer>
+          <a class="wordmark" href="#top"><span class="mark">S</span><span>SimpleVLN</span></a>
+          <p>Native MLLMs for frontier vision-language navigation.</p>
+          <a href="#top">Back to top ↑</a>
+        </footer>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

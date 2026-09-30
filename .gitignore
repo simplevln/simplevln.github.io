@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+_preview/
+_models/
+_sample.jpg
+.DS_Store
