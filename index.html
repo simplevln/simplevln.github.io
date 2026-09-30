@@ -65,9 +65,7 @@
         <div><strong>293<small>ms</small></strong><span>每轮推理</span></div>
       </div>
       <figure class="paper-figure hero-figure reveal">
-        <div class="pdf-frame ratio-fig1">
-          <iframe title="Motivation and performance comparison of SimpleVLN" src="assets/fig1-motivation.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-        </div>
+        <img src="assets/fig1-motivation.png" alt="Motivation and performance comparison of SimpleVLN">
         <figcaption><strong>Figure 1: Motivation and performance comparison of SimpleVLN.</strong> (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
       </figure>
     </section>
@@ -177,9 +175,7 @@
       </div>
 
       <figure class="paper-figure large reveal">
-        <div class="pdf-frame ratio-framework">
-          <iframe title="Overview of SimpleVLN" src="assets/vln_framework.compressed.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-        </div>
+        <img src="assets/framework-hd.png" alt="Overview of SimpleVLN">
         <figcaption><strong>Figure 2: Overview of SimpleVLN.</strong> At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
       </figure>
 
@@ -217,9 +213,7 @@
       </div>
 
       <figure class="paper-figure large reveal">
-        <div class="pdf-frame ratio-pipeline">
-          <iframe title="Training pipeline of SimpleVLN" src="assets/simplevln_pipeline.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-        </div>
+        <img src="assets/pipeline-hd.png" alt="Training pipeline of SimpleVLN">
         <figcaption><strong>Figure 3: Training data pipeline of SimpleVLN.</strong> SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
       </figure>
     </section>
@@ -382,12 +376,8 @@
 
       <figure class="paper-figure large reveal">
         <div class="pdf-row cols-2">
-          <div class="pdf-frame ratio-mem">
-            <iframe title="Global memory budget" src="assets/fig_mem.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-          </div>
-          <div class="pdf-frame ratio-mem">
-            <iframe title="Local memory budget" src="assets/fig_mem_local.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-          </div>
+          <img src="assets/fig4-mem.png" alt="Global memory budget">
+          <img src="assets/fig4-mem-local.png" alt="Local memory budget">
         </div>
         <figcaption><strong>Figure 4: Memory budget.</strong> Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
       </figure>
@@ -439,15 +429,9 @@
 
       <figure class="paper-figure large reveal">
         <div class="pdf-row cols-3">
-          <div class="pdf-frame ratio-rl">
-            <iframe title="RL reward curve" src="assets/rl_curve_reward.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-          </div>
-          <div class="pdf-frame ratio-rl">
-            <iframe title="RL success-rate curve" src="assets/rl_curve_sr.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-          </div>
-          <div class="pdf-frame ratio-rl">
-            <iframe title="RL decision-length curve" src="assets/rl_curve_length.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-          </div>
+          <img src="assets/fig5-reward.png" alt="RL reward curve">
+          <img src="assets/fig5-sr.png" alt="RL success-rate curve">
+          <img src="assets/fig5-length.png" alt="RL decision-length curve">
         </div>
         <figcaption><strong>Figure 5: RL training dynamics.</strong> Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
       </figure>
@@ -482,9 +466,7 @@
         <p>SimpleVLN follows multi-step instructions on a Daystar quadruped and in unseen Habitat scenes, using only egocentric visual observations.</p>
       </div>
       <figure class="paper-figure large reveal">
-        <div class="pdf-frame ratio-qual">
-          <iframe title="SimpleVLN qualitative results in real-world and simulated environments" src="assets/sim_and_real.compressed.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"></iframe>
-        </div>
+        <img src="assets/qualitative-full.png" alt="SimpleVLN qualitative results in real-world and simulated environments">
         <figcaption><strong>Figure 6: SimpleVLN in real-world and simulated environments.</strong> SimpleVLN follows diverse instructions and reaches the specified goals; arrows indicate navigation directions. (a) Qualitative results of SimpleVLN in the real world. (b) Qualitative results of SimpleVLN on Simulation.</figcaption>
       </figure>
     </section>
