@@ -52,7 +52,7 @@ h1 {
   font-size: clamp(46px, 6.2vw, 76px); line-height: 1.02; letter-spacing: -.025em; font-weight: 400;
 }
 h1 em, h2 em { font-family: "Patrick Hand", cursive; font-weight: 400; font-style: normal; }
-h1 em { color: #3ec4d6; }
+h1 em { color: #7ec8ea; }
 h1 span { color: #756ee0; }
 .authors {
   max-width: 920px; margin: 0 auto 12px; color: #2b3140; font-size: 17px; font-style: italic; line-height: 1.75;
