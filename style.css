@@ -86,6 +86,7 @@ h1 span { color: #756ee0; }
 .hero-figure img { border: 0; border-radius: 7px; }
 .paper-figure.large { max-width: 1000px; }
 .paper-figure figcaption { margin: 16px 4px 0; color: #4b5160; font-size: 15px; line-height: 1.6; text-align: left; }
+.paper-figure figcaption strong { color: var(--ink); font-weight: 800; }
 .statement {
   margin-top: 100px; padding: 36px 24px 42px; background: linear-gradient(90deg, #d9eaff, #eee4ff, #ffe5d1);
 }

@@ -52,8 +52,8 @@
       </p>
       <p class="author-note">* Equal contribution &nbsp;·&nbsp; &dagger; Joint project leaders &nbsp;·&nbsp; &Dagger; Corresponding author</p>
       <p class="hero-copy">
-        How far can a native multimodal large language model go in VLN—
-        <strong>before</strong> introducing task-specific architecture?
+        How far can a <strong>native multimodal large language model</strong> go in VLN—
+        before introducing task-specific architecture?
       </p>
       <div class="hero-actions">
         <a class="button primary" href="assets/paper.pdf"><span class="button-icon">↓</span> Read the paper</a>
@@ -62,11 +62,11 @@
       <div class="hero-stats hero-stats-3" aria-label="Headline results">
         <div><strong>76.7<small>%</small></strong><span>R2R-CE Success Rate</span></div>
         <div><strong>80.1<small>%</small></strong><span>RxR-CE Success Rate</span></div>
-        <div><strong>293<small>ms</small></strong><span>Per Action-Chunk Decision</span></div>
+        <div><strong>293<small>ms</small></strong><span>每轮推理</span></div>
       </div>
       <figure class="paper-figure hero-figure reveal">
         <img src="assets/fig1-motivation.png" alt="Motivation and performance comparison of SimpleVLN">
-        <figcaption>Figure 1: Motivation and performance comparison of SimpleVLN. (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
+        <figcaption><strong>Figure 1: Motivation and performance comparison of SimpleVLN.</strong> (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
       </figure>
     </section>
 
@@ -137,7 +137,7 @@
             <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-vending.jpg" aria-label="Vending machine, 4 times speed">
               <source src="assets/demos/real-vending.mp4" type="video/mp4">
             </video>
-            <figcaption><strong>Vending machine</strong><span>Turn left at the yellow bench</span></figcaption>
+            <figcaption><strong>Vending machine</strong><span>Stop at the vending machine</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
             <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-path.jpg" aria-label="Outdoor path, 2 times speed">
@@ -158,7 +158,7 @@
             <figcaption><strong>Red car</strong><span>Avoid the pillar and stop at the red car</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-office.jpg" aria-label="Office hallway">
+            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-office.jpg" aria-label="Office hallway, 2 times speed">
               <source src="assets/demos/real-office.mp4" type="video/mp4">
             </video>
             <figcaption><strong>Office hallway</strong><span>Turn left and enter the first room</span></figcaption>
@@ -176,7 +176,7 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/framework-hd.png" alt="Overview of SimpleVLN">
-        <figcaption>Figure 2: Overview of SimpleVLN. At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
+        <figcaption><strong>Figure 2: Overview of SimpleVLN.</strong> At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
       </figure>
 
       <div class="pillars">
@@ -214,7 +214,7 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/pipeline-hd.png" alt="Training pipeline of SimpleVLN">
-        <figcaption>Figure 3: Training data pipeline of SimpleVLN. SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
+        <figcaption><strong>Figure 3: Training data pipeline of SimpleVLN.</strong> SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
       </figure>
     </section>
 
@@ -376,7 +376,7 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/fig4-memory.png" alt="Memory budget ablation">
-        <figcaption>Figure 4: Memory budget. Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
+        <figcaption><strong>Figure 4: Memory budget.</strong> Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
       </figure>
 
       <div class="table-block reveal">
@@ -426,7 +426,7 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/fig5-rl.png" alt="RL training dynamics">
-        <figcaption>Figure 5: RL training dynamics. Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
+        <figcaption><strong>Figure 5: RL training dynamics.</strong> Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
       </figure>
 
       <div class="table-block reveal">
@@ -460,7 +460,7 @@
       </div>
       <figure class="paper-figure large reveal">
         <img src="assets/qualitative-full.png" alt="SimpleVLN qualitative results in real-world and simulated environments">
-        <figcaption>Figure 6: SimpleVLN in real-world and simulated environments. SimpleVLN follows diverse instructions and reaches the specified goals; arrows indicate navigation directions. (a) Qualitative results of SimpleVLN in the real world. (b) Qualitative results of SimpleVLN on Simulation.</figcaption>
+        <figcaption><strong>Figure 6: SimpleVLN in real-world and simulated environments.</strong> SimpleVLN follows diverse instructions and reaches the specified goals; arrows indicate navigation directions. (a) Qualitative results of SimpleVLN in the real world. (b) Qualitative results of SimpleVLN on Simulation.</figcaption>
       </figure>
     </section>
 

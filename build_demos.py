@@ -33,7 +33,7 @@ OUT_W, OUT_H = 1280, 720
 OUT_FPS = 15
 PIP_W, PIP_H = 420, 315
 PIP_RADIUS = 22
-PIP_MARGIN = 14
+PIP_MARGIN = 0
 PIP_RED = (96, 86, 255)  # BGR, coral red border
 STOP_HOLD = 10
 LEAD_FRAMES = 4
@@ -42,6 +42,8 @@ FONT_CLEAR = Path(r"C:\Windows\Fonts\segoeuib.ttf")
 FONT_BOLD = Path(r"C:\Windows\Fonts\arialbd.ttf")
 YOLOX_PATH = ROOT / "_models" / "yolox.onnx"
 STOP_PATH = ROOT / "assets" / "stop-hand.png"
+ARROW_FORWARD = ROOT / "assets" / "arrow-forward.png"
+ARROW_TURN = ROOT / "assets" / "arrow-turn.png"
 TEXT_WHITE = (255, 255, 255, 255)
 # Highlight and arrows: #E5CCFF at the top, #CCFFFF at the bottom.
 GRAD_TOP = (0xE5, 0xCC, 0xFF)
@@ -96,7 +98,7 @@ REALS = [
         "day": "0912",
         "index": 1,
         "need": "vending machine",
-        "highlight": ["yellow bench", "vending machine", "orange top"],
+        "highlight": ["vending machine", "orange top"],
     },
     {
         "id": "real-path",
@@ -125,7 +127,7 @@ REALS = [
         "index": 5,
         "need": "red car",
         "highlight": ["pillar", "red car"],
-        "brighten": True,
+        "expose": 1.35,
     },
     {
         "id": "real-office",
@@ -135,6 +137,7 @@ REALS = [
         "need": "first room",
         "highlight": ["first room"],
         "blur_person": True,
+        "playback": 2,
     },
 ]
 
@@ -221,7 +224,7 @@ def resolve_real(spec: dict) -> dict:
         ((stamp - start).total_seconds(), image, action)
         for stamp, image, action in events
     ]
-    speed = choose_speed(duration)
+    speed = int(spec["playback"]) if spec.get("playback") else choose_speed(duration)
     lead = LEAD_FRAMES * speed / OUT_FPS
     first_t = timed[0][0]
     last_t = timed[-1][0]
@@ -581,100 +584,53 @@ def window_mask(height: int, width: int, radius: int) -> np.ndarray:
 
 
 def place_pip(frame: np.ndarray, pip: np.ndarray) -> None:
-    """First-person window with a red rounded border, tight to the top-left."""
+    """First-person window flush with the top-left corner of the main frame."""
     height, width = pip.shape[:2]
-    x, y = PIP_MARGIN, PIP_MARGIN
-    mask = window_mask(height, width, PIP_RADIUS).astype(np.float32) / 255.0
-    roi = frame[y : y + height, x : x + width].astype(np.float32)
-    mixed = roi * (1 - mask[:, :, None]) + pip.astype(np.float32) * mask[:, :, None]
-    frame[y : y + height, x : x + width] = mixed.astype(np.uint8)
-    pad = 8
-    canvas = np.zeros((height + pad * 2, width + pad * 2), np.uint8)
-    canvas[pad : pad + height, pad : pad + width] = window_mask(height, width, PIP_RADIUS)
-    outer = cv2.dilate(canvas, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9)))
-    ring = cv2.subtract(outer, canvas) > 0
-    y0, x0 = y - pad, x - pad
-    view = frame[y0 : y0 + ring.shape[0], x0 : x0 + ring.shape[1]]
-    view[ring] = PIP_RED
-
-
-def _gradient_sprite(mask: np.ndarray) -> np.ndarray:
-    """Fill a shape with #E5CCFF → #CCFFFF and a thin dark edge."""
-    height, width = mask.shape
-    sprite = np.zeros((height, width, 4), np.uint8)
-    ramp = np.linspace(0, 1, height, dtype=np.float32)[:, None, None]
-    top = np.array(GRAD_TOP, np.float32)
-    bottom = np.array(GRAD_BOT, np.float32)
-    rgb = top * (1 - ramp) + bottom * ramp
-    bgr = np.repeat(rgb[:, :, ::-1], width, axis=1)
-    sprite[:, :, :3] = bgr.astype(np.uint8)
-    sprite[:, :, 3] = mask
-    ring = cv2.subtract(
-        cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))),
-        mask,
+    inset = 7
+    outer = window_mask(height, width, PIP_RADIUS)
+    inner_h, inner_w = height - 2 * inset, width - 2 * inset
+    inner = np.zeros((height, width), np.uint8)
+    inner[inset : inset + inner_h, inset : inset + inner_w] = window_mask(
+        inner_h, inner_w, max(4, PIP_RADIUS - inset)
     )
-    sprite[ring > 0, :3] = (45, 35, 40)
-    sprite[ring > 0, 3] = 255
-    return sprite
-
-
-def _straight_mask(pointing: str) -> np.ndarray:
-    side = 230
-    mask = np.zeros((side, side), np.uint8)
-    center = side // 2
-    points = np.array(
-        [
-            [center, 16],
-            [center - 58, 96],
-            [center - 22, 96],
-            [center - 22, 206],
-            [center + 22, 206],
-            [center + 22, 96],
-            [center + 58, 96],
-        ],
-        np.int32,
-    )
-    cv2.fillPoly(mask, [points], 255)
-    if pointing == "back":
-        mask = cv2.flip(mask, 0)
-    return mask
-
-
-def _turn_mask(direction: str) -> np.ndarray:
-    """Curved arrow, matching the hooked turn glyph. Head points left or right."""
-    height, width = 270, 270
-    mask = np.zeros((height, width), np.uint8)
-    thickness = 48
-    cx, cy, radius = 180, 100, 74
-    cv2.ellipse(mask, (cx, cy), (radius, radius), 0, 90, 180, 255, thickness, cv2.LINE_AA)
-    cv2.line(mask, (cx, cy + radius - 10), (cx, 252), 255, thickness, cv2.LINE_AA)
-    tip_x = cx - radius - 38
-    head = np.array(
-        [
-            [tip_x, cy],
-            [cx - radius + 20, cy - 44],
-            [cx - radius + 20, cy + 44],
-        ],
-        np.int32,
-    )
-    cv2.fillConvexPoly(mask, head, 255)
-    if direction == "right":
-        mask = cv2.flip(mask, 1)
-    return mask
+    photo = (inner > 0).astype(np.float32)[:, :, None]
+    roi = frame[0:height, 0:width].astype(np.float32)
+    frame[0:height, 0:width] = (
+        roi * (1.0 - photo) + pip.astype(np.float32) * photo
+    ).astype(np.uint8)
+    ring = (outer > 0) & (inner == 0)
+    frame[0:height, 0:width][ring] = PIP_RED
 
 
 _ARROW_CACHE: dict[str, np.ndarray] = {}
 _STOP_SPRITE: np.ndarray | None = None
 
 
+def _png_sprite(path: Path, height: int, flip_x: bool = False, flip_y: bool = False) -> np.ndarray:
+    image = Image.open(path).convert("RGBA")
+    scale = height / image.height
+    image = image.resize((max(1, int(round(image.width * scale))), height), Image.Resampling.LANCZOS)
+    if flip_x:
+        image = image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    if flip_y:
+        image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    array = np.array(image)
+    bgr = array[:, :, :3][:, :, ::-1]
+    return np.dstack([bgr, array[:, :, 3]])
+
+
 def arrow_sprite(kind: str) -> np.ndarray:
     cached = _ARROW_CACHE.get(kind)
     if cached is not None:
         return cached
-    if kind in ("left", "right"):
-        sprite = _gradient_sprite(_turn_mask(kind))
+    if kind == "left":
+        sprite = _png_sprite(ARROW_TURN, 200)
+    elif kind == "right":
+        sprite = _png_sprite(ARROW_TURN, 200, flip_x=True)
+    elif kind == "back":
+        sprite = _png_sprite(ARROW_FORWARD, 190, flip_y=True)
     else:
-        sprite = _gradient_sprite(_straight_mask("back" if kind == "back" else "forward"))
+        sprite = _png_sprite(ARROW_FORWARD, 190)
     _ARROW_CACHE[kind] = sprite
     return sprite
 
@@ -704,7 +660,7 @@ def paint_arrow(frame: np.ndarray, kind: str | None) -> None:
     if kind in (None, "stop"):
         return
     sprite = arrow_sprite(kind)
-    blit(frame, sprite, PIP_W + PIP_MARGIN + 24, 18)
+    blit(frame, sprite, PIP_W + 18, 10)
 
 
 def paint_stop(frame: np.ndarray) -> None:
@@ -712,11 +668,29 @@ def paint_stop(frame: np.ndarray) -> None:
     blit(frame, sprite, OUT_W - sprite.shape[1] - 36, 70)
 
 
+def lift_tone(frame: np.ndarray, alpha: float, beta: float, knee_at: float, gain: float, gamma: float) -> None:
+    lifted = frame.astype(np.float32) * alpha + beta
+    knee = lifted > knee_at
+    lifted = np.where(knee, knee_at + (lifted - knee_at) * gain, lifted)
+    frame[:] = (np.clip(lifted / 255.0, 0.0, 1.0) ** gamma * 255.0).astype(np.uint8)
+
+
 def improve_frame(frame: np.ndarray, spec: dict, people: PeopleBlur | None = None) -> None:
-    if spec.get("brighten"):
+    expose = spec.get("expose")
+    if expose:
+        lift_tone(frame, float(expose), 14, 190, 0.42, 0.9)
+    elif spec.get("brighten"):
         frame[:] = cv2.convertScaleAbs(frame, alpha=1.12, beta=20)
     if people is not None:
         people.apply(frame, protect_robot=True)
+
+
+def brighten_pip(pip: np.ndarray, spec: dict) -> np.ndarray:
+    if not spec.get("expose"):
+        return pip
+    pip = pip.copy()
+    lift_tone(pip, 2.6, 16, 200, 0.35, 0.78)
+    return pip
 
 
 def compose_real(spec: dict, preview: bool) -> None:
@@ -747,7 +721,7 @@ def compose_real(spec: dict, preview: bool) -> None:
             paint_arrow(frame, kind)
         pip = still_at(bank, t)
         if pip is not None:
-            place_pip(frame, pip)
+            place_pip(frame, brighten_pip(pip, spec))
         return frame
 
     if preview:
@@ -774,7 +748,7 @@ def compose_real(spec: dict, preview: bool) -> None:
             FFMPEG, "-y", "-loglevel", "error",
             "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{OUT_W}x{OUT_H}", "-r", str(OUT_FPS),
             "-i", "pipe:0",
-            "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "23", "-preset", "veryfast",
+            "-an", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-preset", "veryfast",
             "-movflags", "+faststart",
             str(out_path),
         ],
@@ -820,7 +794,7 @@ def compose_real(spec: dict, preview: bool) -> None:
             paint_stop(ending)
             pip = still_at(bank, last_t)
             if pip is not None:
-                place_pip(ending, pip)
+                place_pip(ending, brighten_pip(pip, spec))
             for _ in range(STOP_HOLD):
                 proc.stdin.write(ending.tobytes())
                 written += 1
