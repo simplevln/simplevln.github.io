@@ -154,6 +154,7 @@ h2 { margin: 0; font-family: "Patrick Hand", "Segoe UI", Arial, Helvetica, sans-
 .pillar-top span { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%; }
 .pillar-top b { color: var(--violet); }
 .pillars h3 { margin: 52px 0 18px; font-family: "Patrick Hand", "Segoe UI", Arial, Helvetica, sans-serif; font-size: 29px; line-height: 1.16; letter-spacing: 0; font-weight: 400; }
+.analysis-part { margin: 56px 0 0; font-family: "Patrick Hand", "Segoe UI", Arial, Helvetica, sans-serif; font-size: 32px; font-weight: 400; line-height: 1.1; }
 .pillars p { min-height: 125px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
 .pillars ul { margin: 24px 0 0; padding: 0; list-style: none; font-family: "DM Mono", Consolas, "Courier New", monospace; font-size: 12px; }
 .pillars li { padding: 9px 0; border-top: 1px solid var(--line); }

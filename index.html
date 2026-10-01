@@ -15,19 +15,16 @@
       <span class="mark">S</span><span>SimpleVLN</span>
     </a>
     <nav aria-label="Main navigation">
-      <a href="#video">Video</a>
-      <a href="#method">Method</a>
+      <a href="#video">Demos</a>
+      <a href="#method">Approach</a>
       <a href="#results">Results</a>
-      <a href="#ablation">Ablation</a>
-      <a href="#examples">Examples</a>
+      <a href="#analysis">Analysis</a>
       <a href="#citation">Citation</a>
     </nav>
-    <a class="nav-paper" href="assets/paper.pdf">Paper <span>↗</span></a>
   </header>
 
   <main id="top">
     <section class="hero section">
-      <div class="eyebrow"><span></span> ICLR 2027 · Under Review</div>
       <h1>Towards <em>Simple</em> and <span>Frontier</span><br>Vision-Language Navigation</h1>
       <p class="authors">
         Lingyi Hong<sup>1,*,&dagger;</sup>,
@@ -53,7 +50,6 @@
         before introducing task-specific architecture?
       </p>
       <div class="hero-actions">
-        <a class="button primary" href="assets/paper.pdf"><span class="button-icon">↓</span> Read the paper</a>
         <span class="button muted" title="Code will be released after review"><span class="button-icon">&lt;/&gt;</span> Code · Coming soon</span>
       </div>
       <div class="hero-stats hero-stats-3" aria-label="Headline results">
@@ -63,12 +59,12 @@
       </div>
       <figure class="paper-figure hero-figure reveal">
         <img src="assets/fig1-motivation.png" alt="Motivation and performance comparison of SimpleVLN">
-        <figcaption><strong>Figure 1: Motivation and performance comparison of SimpleVLN.</strong> (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
+        <figcaption><strong>Motivation and performance comparison of SimpleVLN.</strong> (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
       </figure>
     </section>
 
     <section class="statement" aria-label="Core idea">
-      <p class="statement-lead">Three levers. One native MLLM.</p>
+      <p class="statement-lead">Three parts. One native MLLM.</p>
       <div class="recipe">
         <span>Formulation</span>
         <i></i>
@@ -173,7 +169,7 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/framework-hd.png" alt="Overview of SimpleVLN">
-        <figcaption><strong>Figure 2: Overview of SimpleVLN.</strong> At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
+        <figcaption><strong>Overview of SimpleVLN.</strong> At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
       </figure>
 
       <div class="pillars">
@@ -183,7 +179,7 @@
           <p>Single-turn decision inputs prevent context growth. Global–local history keeps route coverage and recent continuity within a fixed visual budget.</p>
           <ul>
             <li>Single-turn decisions</li>
-            <li>8 global + 1 local frame</li>
+            <li>History management</li>
             <li>Action-chunk prediction</li>
           </ul>
         </article>
@@ -203,7 +199,7 @@
           <p>A progressive post-training pipeline shifts the learning signal from demonstrated actions to binary, episode-level success feedback.</p>
           <ul>
             <li>Imitation learning</li>
-            <li>Supervised adaptation</li>
+            <li>DAgger</li>
             <li>Outcome-driven RL</li>
           </ul>
         </article>
@@ -211,7 +207,7 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/pipeline-hd.png" alt="Training pipeline of SimpleVLN">
-        <figcaption><strong>Figure 3: Training data pipeline of SimpleVLN.</strong> SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
+        <figcaption><strong>Training data pipeline of SimpleVLN.</strong> SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
       </figure>
     </section>
 
@@ -220,7 +216,7 @@
         <div class="section-label light">03 — Results</div>
         <div class="split-heading">
           <h2>Simple scales.<br><em>Results speak.</em></h2>
-          <p>Across backbone families and model sizes, reinforcement learning consistently unlocks stronger navigation. The 9B model sets a new high-water mark on both VLN-CE benchmarks.</p>
+          <p>Across backbone families and model sizes, reinforcement learning consistently unlocks stronger navigation. The 9B model reports strong results on both VLN-CE benchmarks.</p>
         </div>
         <div class="score-grid">
           <article>
@@ -247,7 +243,7 @@
         </div>
 
         <div class="table-block reveal">
-          <h3>Table 1: Comparison with state-of-the-art methods on the R2R-CE and RxR-CE val-unseen splits.</h3>
+          <h3>Comparison with state-of-the-art methods on the R2R-CE and RxR-CE val-unseen splits.</h3>
           <p>&dagger; and * denote SimpleVLN before and after RL, respectively.</p>
           <div class="table-scroll">
             <table>
@@ -302,7 +298,7 @@
         </div>
 
         <div class="table-block reveal">
-          <h3>Table 2: Comparison with state-of-the-art methods on inference latency and navigation performance.</h3>
+          <h3>Comparison with state-of-the-art methods on inference latency and navigation performance.</h3>
           <p>Latency is measured on R2R-CE using the same NVIDIA A100 GPU, and measures model execution only for one action-chunk decision, excluding preprocessing, environment execution, and other non-model overhead. SimpleVLN uses Qwen3-VL-4B as its backbone.</p>
           <div class="table-scroll">
             <table>
@@ -332,15 +328,16 @@
       </div>
     </section>
 
-    <section class="section ablation" id="ablation">
-      <div class="section-label">04 — Ablation</div>
+    <section class="section ablation" id="analysis">
+      <div class="section-label">04 — Analysis</div>
       <div class="split-heading">
-        <h2>Each lever<br>earns its <em>place.</em></h2>
-        <p>StreamVLN shows a data recipe on its project page; FutureNav and DualVLN keep ablations in the paper. We surface them here because they are the evidence for formulation, data, and optimization.</p>
+        <h2>Each part,<br>in <em>turn.</em></h2>
+        <p>The checks below follow the same three parts as the approach: formulation, data, and optimization.</p>
       </div>
 
+      <h3 class="analysis-part">Formulation</h3>
       <div class="table-block reveal">
-        <h3>Table 3: Navigation interface and memory design.</h3>
+        <h3>Navigation interface and memory design.</h3>
         <p>Ablations of action chunking, single-turn navigation, and observation sampling using Qwen3-VL 4B fine-tuned on R2R. The default design of SimpleVLN is shaded.</p>
         <div class="ablation-grid">
           <table>
@@ -376,11 +373,12 @@
           <img src="assets/fig4-mem.png" alt="Global memory budget">
           <img src="assets/fig4-mem-local.png" alt="Local memory budget">
         </div>
-        <figcaption><strong>Figure 4: Memory budget.</strong> Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
+        <figcaption><strong>Memory budget.</strong> Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
       </figure>
 
+      <h3 class="analysis-part">Data</h3>
       <div class="table-block reveal">
-        <h3>Table 4: Demonstration and DAgger data ablation on the R2R-CE and RxR-CE val-unseen splits.</h3>
+        <h3>Demonstration and DAgger data on the R2R-CE and RxR-CE val-unseen splits.</h3>
         <div class="table-scroll">
           <table>
             <thead>
@@ -401,7 +399,7 @@
       </div>
 
       <div class="table-block reveal">
-        <h3>Table 5: Synthesized RL data ablation on the R2R-CE and RxR-CE val-unseen splits.</h3>
+        <h3>Synthesized RL data on the R2R-CE and RxR-CE val-unseen splits.</h3>
         <p>Dataset columns identify the training-scene sources used to synthesize RL episodes.</p>
         <div class="table-scroll">
           <table>
@@ -424,17 +422,18 @@
         </div>
       </div>
 
+      <h3 class="analysis-part">Optimization</h3>
       <figure class="paper-figure large reveal">
         <div class="pdf-row cols-3">
           <img src="assets/fig5-reward.png" alt="RL reward curve">
           <img src="assets/fig5-sr.png" alt="RL success-rate curve">
           <img src="assets/fig5-length.png" alt="RL decision-length curve">
         </div>
-        <figcaption><strong>Figure 5: RL training dynamics.</strong> Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
+        <figcaption><strong>RL training dynamics.</strong> Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
       </figure>
 
       <div class="table-block reveal">
-        <h3>Table 6: Reward design and RL optimization on the R2R-CE and RxR-CE val-unseen splits with Qwen3-VL 4B.</h3>
+        <h3>Reward design and RL optimization on the R2R-CE and RxR-CE val-unseen splits with Qwen3-VL 4B.</h3>
         <p>The SPL reward is zero for failed episodes and equals the ratio of the ground-truth path length to the executed path length for successful episodes; the success reward is binary.</p>
         <div class="table-scroll">
           <table>
@@ -456,29 +455,9 @@
       </div>
     </section>
 
-    <section class="section examples" id="examples">
-      <div class="section-label">05 — In the wild</div>
-      <div class="split-heading">
-        <h2>From simulation<br>to the <em>real world.</em></h2>
-        <p>SimpleVLN follows multi-step instructions on a Daystar quadruped and in unseen Habitat scenes, using only egocentric visual observations.</p>
-      </div>
-      <figure class="paper-figure large reveal">
-        <img src="assets/qualitative-full.png" alt="SimpleVLN qualitative results in real-world and simulated environments">
-        <figcaption><strong>Figure 6: SimpleVLN in real-world and simulated environments.</strong> SimpleVLN follows diverse instructions and reaches the specified goals; arrows indicate navigation directions. (a) Qualitative results of SimpleVLN in the real world. (b) Qualitative results of SimpleVLN on Simulation.</figcaption>
-      </figure>
-    </section>
-
-    <section class="section abstract">
-      <div class="section-label">06 — Abstract</div>
-      <div class="abstract-copy">
-        <p>Vision-and-Language Navigation requires embodied agents to ground language in visual observations and make long-horizon decisions. Existing methods often address these demands through task-specific architectures.</p>
-        <p>We present <strong>SimpleVLN</strong>, an architecture-preserving framework developed through studies of navigation formulation, data construction, and optimization. Comprehensive experiments show that the navigation capabilities of native MLLMs can be effectively unlocked without task-specific architectural designs.</p>
-      </div>
-    </section>
-
     <section class="citation" id="citation">
       <div class="section">
-        <div class="section-label light">07 — Citation</div>
+        <div class="section-label light">05 — Citation</div>
         <div class="citation-head">
           <h2>Built simple.<br>Made to <em>advance.</em></h2>
           <button id="copy-citation" type="button">Copy BibTeX</button>
@@ -490,11 +469,10 @@
              and Zhou, Xinyu and He, Bailin and Guo, Yunfei
              and Sun, Qiao and Liu, Xiang and Ma, Boyu
              and Yang, Jianfei and Zhang, Wenqiang},
-  journal = {Under review at ICLR},
   year    = {2027}
 }</code></pre>
         <footer>
-          <a class="wordmark" href="#top"><span class="mark">S</span><span>SimpleVLN</span></a>
+          <a class="wordmark" href="#top"><span>SimpleVLN</span></a>
           <p>Native MLLMs for frontier vision-language navigation.</p>
           <a href="#top">Back to top ↑</a>
         </footer>
