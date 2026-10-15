@@ -5,18 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="SimpleVLN unlocks native MLLMs for vision-language navigation without task-specific architectural designs.">
   <meta name="theme-color" content="#fffefd">
-  <title>SimpleVLN — Native MLLMs for Vision-Language Navigation</title>
-  <link rel="stylesheet" href="style.css">
+  <title>SimpleVLN: Towards Simple and Frontier Vision-Language Navigation</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <link rel="icon" href="assets/favicon.png?v=20261013bot" type="image/png">
+  <link rel="stylesheet" href="premium/original.css">
+  <link rel="stylesheet" href="premium/premium.css?v=20261015bold">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
   <header class="nav">
     <a class="wordmark" href="#top" aria-label="SimpleVLN home">
-      <span class="mark">S</span><span>SimpleVLN</span>
+      <span>SimpleVLN</span>
     </a>
     <nav aria-label="Main navigation">
-      <a href="#video">Demos</a>
-      <a href="#method">Approach</a>
+      <a href="#demos">Demos</a>
+      <a href="#approach">Approach</a>
       <a href="#results">Results</a>
       <a href="#analysis">Analysis</a>
       <a href="#citation">Citation</a>
@@ -44,27 +47,28 @@
         <span><sup>2</sup> Nanyang Technological University</span>
         <span><sup>3</sup> Lenovo Group Limited</span>
       </p>
-      <p class="author-note">* Equal contribution &nbsp;·&nbsp; &dagger; Joint project leaders &nbsp;·&nbsp; &Dagger; Corresponding author</p>
+      <p class="author-note">* Equal contribution &nbsp;·&nbsp; &dagger; Project leaders &nbsp;·&nbsp; &Dagger; Corresponding author</p>
       <p class="hero-copy">
-        How far can a <strong>native multimodal large language model</strong> go in VLN—
-        before introducing task-specific architecture?
+        <span>How far can a <strong>native multimodal large language model</strong> go in VLN</span>
+        <span>before introducing task-specific architecture?</span>
       </p>
       <div class="hero-actions">
         <span class="button muted" title="Code will be released after review"><span class="button-icon">&lt;/&gt;</span> Code · Coming soon</span>
       </div>
       <div class="hero-stats hero-stats-3" aria-label="Headline results">
-        <div><strong>76.7<small>%</small></strong><span>R2R-CE Success Rate</span></div>
-        <div><strong>80.1<small>%</small></strong><span>RxR-CE Success Rate</span></div>
-        <div><strong>293<small>ms</small></strong><span>Per Action-Chunk Decision</span></div>
+        <div><strong>76.7<small>%</small></strong><span>R2R-CE · val-unseen SR</span></div>
+        <div><strong>80.1<small>%</small></strong><span>RxR-CE · val-unseen SR</span></div>
+        <div><strong>293<small>ms</small></strong><span>Model-only latency · A100 · Qwen3-VL 4B</span></div>
       </div>
       <figure class="paper-figure hero-figure reveal">
         <img src="assets/fig1-motivation.png" alt="Motivation and performance comparison of SimpleVLN">
-        <figcaption><strong>Motivation and performance comparison of SimpleVLN.</strong> (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on R2R-CE and RxR-CE.</figcaption>
+        <figcaption><strong>Motivation and performance comparison of SimpleVLN.</strong> (a) Motivation for using native MLLMs in VLN. (b) Comparison with existing methods on <span class="nowrap">R2R-CE and RxR-CE.</span></figcaption>
+        <p class="figure-analysis">Existing methods often address these demands through task-specific architectures. As multimodal large language models (MLLMs) become increasingly capable, an important question remains: <strong>Have we truly unlocked the potential of native MLLMs for VLN before introducing task-specific architecture?</strong></p>
       </figure>
     </section>
 
     <section class="statement" aria-label="Core idea">
-      <p class="statement-lead">Three parts. One native MLLM.</p>
+      <p class="statement-lead">Exploring what matters for vision-language navigation.</p>
       <div class="recipe">
         <span>Formulation</span>
         <i></i>
@@ -74,37 +78,50 @@
       </div>
     </section>
 
-    <section class="section video-section" id="video">
+    <section class="hero-abstract" aria-labelledby="abstract-title">
+      <h2 id="abstract-title">Abstract.</h2>
+      <p class="abstract-intro">SimpleVLN explores how far native multimodal models can go in vision-language navigation through better formulation, data, and optimization, without task-specific architectural designs.</p>
+      <details class="abstract-details">
+        <summary><span class="abstract-toggle-label">Read the full abstract</span><span class="abstract-toggle-icon" aria-hidden="true">+</span></summary>
+        <div class="abstract-body">
+          <p>Vision-and-Language Navigation (VLN) requires embodied agents to ground language in visual observations and make long-horizon decisions. Existing methods often address these demands through task-specific architectures. As multimodal large language models (MLLMs) become increasingly capable, an important question remains: <strong>Have we truly unlocked the potential of native MLLMs for VLN before introducing task-specific architecture?</strong></p>
+          <p>We present SimpleVLN, an architecture-preserving framework developed through studies of navigation formulation, data construction, and optimization. At the formulation level, SimpleVLN combines single-turn decision inputs with fixed-budget global–local memory to efficiently use navigation history without unbounded context growth, while action chunks enable efficient output of multiple primitive actions per model invocation. For data construction, we combine expert demonstrations with policy-dependent DAgger experience and develop a scalable synthesis pipeline that generates large-scale tasks for reinforcement learning. At the optimization level, a progressive IL–DAgger–RL pipeline advances from action imitation to task-level outcome optimization.</p>
+          <p>Comprehensive experiments validate the effectiveness of these three aspects. We instantiate SimpleVLN across multiple MLLM backbones and model sizes, demonstrating its generality. SimpleVLN achieves 76.7% and 80.1% success rates on the R2R-CE and RxR-CE splits, respectively, substantially outperforming existing methods. These results show that the navigation capabilities of native MLLMs can be effectively unlocked without task-specific architectural designs.</p>
+        </div>
+      </details>
+    </section>
+
+    <section class="section video-section" id="demos">
       <div class="section-label">01 — Demos</div>
       <div class="split-heading">
-        <h2>From language<br>to <em>motion.</em></h2>
-        <p>Simulation pairs the onboard view with its map. Real-world runs show the robot navigating from live visual instructions.</p>
+        <h2>Qualitative<br><em>results.</em></h2>
+        <p>We evaluate SimpleVLN on the R2R-CE and RxR-CE val-unseen benchmarks in Matterport3D with Habitat. We further evaluate SimpleVLN in real environments using a Daystar quadruped robot. The model runs onboard on an NVIDIA Jetson Thor GPU. SimpleVLN demonstrates strong navigation performance in unseen environments and follows multi-step instructions in diverse real-world scenes.</p>
       </div>
 
       <div class="demo-block">
         <h3 class="demo-kicker">Simulation</h3>
         <div class="demo-grid">
           <figure class="demo-card sim reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-foyer.jpg" aria-label="Foyer simulation">
-              <source src="assets/demos/sim-foyer.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/sim-foyer.jpg?v=20261012n" aria-label="Foyer simulation">
+              <source src="assets/demos/sim-foyer.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Foyer</strong></figcaption>
           </figure>
           <figure class="demo-card sim reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-living.jpg" aria-label="Living room simulation">
-              <source src="assets/demos/sim-living.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/sim-living.jpg?v=20261012n" aria-label="Living room simulation">
+              <source src="assets/demos/sim-living.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Living room</strong></figcaption>
           </figure>
           <figure class="demo-card sim reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-gallery.jpg" aria-label="Gallery simulation">
-              <source src="assets/demos/sim-gallery.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/sim-gallery.jpg?v=20261012n" aria-label="Gallery simulation">
+              <source src="assets/demos/sim-gallery.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Gallery</strong></figcaption>
           </figure>
           <figure class="demo-card sim reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/sim-kitchen.jpg" aria-label="Kitchen simulation">
-              <source src="assets/demos/sim-kitchen.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/sim-kitchen.jpg?v=20261012n" aria-label="Kitchen simulation">
+              <source src="assets/demos/sim-kitchen.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Kitchen</strong></figcaption>
           </figure>
@@ -115,44 +132,44 @@
         <h3 class="demo-kicker">Real world</h3>
         <div class="demo-grid">
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-office.jpg" aria-label="Office hallway, 2 times speed">
-              <source src="assets/demos/real-office.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-office.jpg?v=20261012n" aria-label="Office hallway, 2 times speed">
+              <source src="assets/demos/real-office.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Office hallway</strong><span>Turn left and enter the first room</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-pillar.jpg" aria-label="Yellow pillar, 4 times speed">
-              <source src="assets/demos/real-pillar.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-pillar.jpg?v=20261012n" aria-label="Yellow pillar, 4 times speed">
+              <source src="assets/demos/real-pillar.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Yellow pillar</strong><span>Stop next to the yellow pillar</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-kfc.jpg" aria-label="KFC entrance, 2 times speed">
-              <source src="assets/demos/real-kfc.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-kfc.jpg?v=20261012n" aria-label="KFC entrance, 2 times speed">
+              <source src="assets/demos/real-kfc.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>KFC entrance</strong><span>Walk to the KFC entrance and stop</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-vending.jpg" aria-label="Vending machine, 4 times speed">
-              <source src="assets/demos/real-vending.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-vending.jpg?v=20261012n" aria-label="Vending machine, 4 times speed">
+              <source src="assets/demos/real-vending.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Vending machine</strong><span>Stop at the vending machine</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-path.jpg" aria-label="Outdoor path, 2 times speed">
-              <source src="assets/demos/real-path.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-path.jpg?v=20261012n" aria-label="Outdoor path, 2 times speed">
+              <source src="assets/demos/real-path.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Outdoor path</strong><span>Follow the stone path to the fitness area</span></figcaption>
           </figure>
           <figure class="demo-card reveal">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-car.jpg" aria-label="Red car, 4 times speed">
-              <source src="assets/demos/real-car.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-car.jpg?v=20261012n" aria-label="Red car, 4 times speed">
+              <source src="assets/demos/real-car.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Red car</strong><span>Avoid the pillar and stop at the red car</span></figcaption>
           </figure>
           <figure class="demo-card reveal place-last">
-            <video controls muted loop playsinline preload="metadata" poster="assets/demos/real-follow.jpg" aria-label="Follow the person, 4 times speed">
-              <source src="assets/demos/real-follow.mp4" type="video/mp4">
+            <video controls muted loop playsinline preload="auto" poster="assets/demos/real-follow.jpg?v=20261012n" aria-label="Follow the person, 4 times speed">
+              <source src="assets/demos/real-follow.mp4?v=20261013seek" type="video/mp4">
             </video>
             <figcaption><strong>Follow the person</strong><span>Spot the person in black and follow</span></figcaption>
           </figure>
@@ -160,33 +177,34 @@
       </div>
     </section>
 
-    <section class="section intro" id="method">
+    <section class="section intro" id="approach">
       <div class="section-label">02 — Approach</div>
       <div class="split-heading">
-        <h2>Keep the model.<br>Change the <em>recipe.</em></h2>
-        <p>SimpleVLN directly adapts off-the-shelf MLLMs to sequential navigation. No graph planner, no specialized spatial encoder, and no dual-system controller.</p>
+        <h2>Adapting native<br><em>MLLMs to VLN.</em></h2>
+        <p>SimpleVLN directly adapts off-the-shelf MLLMs to VLN without architectural modifications. We study native-MLLM navigation from three perspectives: navigation formulation, data construction, and a progressive optimization strategy that shifts from action imitation to outcome-driven learning through <span class="nowrap">environment interaction.</span></p>
       </div>
 
       <figure class="paper-figure large reveal">
         <img src="assets/framework-hd.png" alt="Overview of SimpleVLN">
-        <figcaption><strong>Overview of SimpleVLN.</strong> At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk for navigation.</figcaption>
+        <figcaption><strong>Overview of SimpleVLN.</strong> At each decision, sampled history frames, current observation, and the instruction are fed to an MLLM, which directly predicts an action chunk <span class="nowrap">for navigation.</span></figcaption>
+        <p class="figure-analysis">We construct a <strong>single-turn decision input</strong> from the instruction, current observation, and sampled visual history, excluding previous dialogue turns and past actions. <strong>Global–local history selection</strong> preserves recent continuity while sparsely covering earlier observations within a fixed budget. We use <strong>action chunking</strong> to predict an ordered sequence of primitive actions per invocation for sequential execution by <span class="nowrap">the environment.</span></p>
       </figure>
 
       <div class="pillars">
         <article>
           <div class="pillar-top"><span>01</span><b>Formulation</b></div>
-          <h3>Bounded context,<br>unbounded horizon.</h3>
-          <p>Single-turn decision inputs prevent context growth. Global–local history keeps route coverage and recent continuity within a fixed visual budget.</p>
+          <h3>Decision inputs<br>and history management.</h3>
+          <p>We combine single-turn decision inputs with fixed-budget global–local memory to efficiently use navigation history without unbounded context growth. Action chunking predicts multiple primitive actions per <span class="nowrap">model invocation.</span></p>
           <ul>
             <li>Single-turn decisions</li>
-            <li>History management</li>
+            <li>Global–local memory</li>
             <li>Action-chunk prediction</li>
           </ul>
         </article>
         <article>
           <div class="pillar-top"><span>02</span><b>Data</b></div>
-          <h3>Learn from experts.<br>Recover from mistakes.</h3>
-          <p>Expert demonstrations are expanded with policy-induced DAgger experience and newly synthesized navigation tasks for interaction-based learning.</p>
+          <h3>Demonstrations and<br>synthesized tasks.</h3>
+          <p>We combine expert demonstrations with policy-dependent experience collected through DAgger, and develop a scalable task-synthesis pipeline to generate navigation tasks for <span class="nowrap">reinforcement learning.</span></p>
           <ul>
             <li>R2R + RxR + ScaleVLN</li>
             <li>Policy-dependent DAgger</li>
@@ -195,11 +213,11 @@
         </article>
         <article>
           <div class="pillar-top"><span>03</span><b>Optimization</b></div>
-          <h3>From action imitation<br>to task completion.</h3>
-          <p>A progressive post-training pipeline shifts the learning signal from demonstrated actions to binary, episode-level success feedback.</p>
+          <h3>Progressive<br>IL–DAgger–RL training.</h3>
+          <p>We investigate a progressive IL–DAgger–RL pipeline: imitation learning initializes the policy, DAgger adapts it to policy-induced states, and RL optimizes task-level outcomes through <span class="nowrap">environment interaction.</span></p>
           <ul>
             <li>Imitation learning</li>
-            <li>DAgger</li>
+            <li>DAgger-based fine-tuning</li>
             <li>Outcome-driven RL</li>
           </ul>
         </article>
@@ -207,7 +225,8 @@
 
       <figure class="paper-figure large reveal">
         <img src="assets/pipeline-hd.png" alt="Training pipeline of SimpleVLN">
-        <figcaption><strong>Training data pipeline of SimpleVLN.</strong> SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and outcome feedback.</figcaption>
+        <figcaption><strong>Training data pipeline of SimpleVLN.</strong> SimpleVLN first learns from expert demonstrations, then collects and aggregates corrective trajectories through DAgger. For RL, it synthesizes navigation episodes from sampled start–goal paths and generated instructions, then optimizes the policy through environment interaction and <span class="nowrap">outcome feedback.</span></figcaption>
+        <p class="figure-analysis">First, imitation learning uses expert demonstrations to learn navigation actions. Next, DAgger-based fine-tuning adapts the policy to states encountered during its own execution while retaining action-level supervision. Finally, reinforcement learning optimizes task-level outcomes through environment interaction on synthesized episodes, shifting the learning signal from demonstrated actions to <span class="nowrap">outcome feedback.</span></p>
       </figure>
     </section>
 
@@ -215,36 +234,41 @@
       <div class="section">
         <div class="section-label light">03 — Results</div>
         <div class="split-heading">
-          <h2>Simple scales.<br><em>Results speak.</em></h2>
-          <p>Across backbone families and model sizes, reinforcement learning consistently unlocks stronger navigation. The 9B model reports strong results on both VLN-CE benchmarks.</p>
+          <h2>Quantitative<br><em>results.</em></h2>
+          <p>SimpleVLN achieves state-of-the-art navigation success while preserving the native MLLM architecture and using only first-person RGB observations. Strong results across model families and scales show that this approach can unlock navigation capabilities in a range of native multimodal models.</p>
         </div>
         <div class="score-grid">
           <article>
             <header><span>R2R-CE</span><small>val-unseen · SR ↑</small></header>
             <div class="score"><b>76.7</b><i>%</i></div>
-            <div class="bar"><span style="--value:95.9%"></span></div>
-            <footer><span>Previous best</span><b>73.2</b></footer>
+            <p class="score-label">Qwen3.5 9B</p>
+            <ul class="model-srs">
+              <li><span>Qwen3-VL 4B</span><b>73.8</b></li>
+              <li><span>Qwen3-VL 8B</span><b>74.4</b></li>
+              <li><span>Qwen3.5 4B</span><b>76.3</b></li>
+            </ul>
           </article>
           <article>
             <header><span>RxR-CE</span><small>val-unseen · SR ↑</small></header>
             <div class="score"><b>80.1</b><i>%</i></div>
-            <div class="bar"><span style="--value:100%"></span></div>
-            <footer><span>Previous best</span><b>75.6</b></footer>
+            <p class="score-label">Qwen3.5 9B</p>
+            <ul class="model-srs">
+              <li><span>Qwen3-VL 4B</span><b>75.1</b></li>
+              <li><span>Qwen3-VL 8B</span><b>76.4</b></li>
+              <li><span>Qwen3.5 4B</span><b>79.2</b></li>
+            </ul>
           </article>
           <article class="latency">
-            <header><span>Fast by design</span><small>A100 · model execution</small></header>
+            <header><span>Inference latency</span><small>NVIDIA A100</small></header>
             <div class="score"><b>293</b><i>ms</i></div>
-            <p>Comparable to StreamVLN, while delivering <strong>+16.9</strong> SR on R2R-CE.</p>
+            <p class="score-label">Qwen3-VL 4B</p>
+            <p class="latency-copy">SimpleVLN predicts each action chunk in 293 ms with Qwen3-VL 4B on an NVIDIA A100, while maintaining strong navigation without a slower model or task-specific architecture.</p>
           </article>
-        </div>
-        <div class="backbones">
-          <span>Validated across</span>
-          <b>Qwen2.5-VL</b><i>→</i><b>Qwen3-VL</b><i>→</i><b>Qwen3.5</b>
         </div>
 
         <div class="table-block reveal">
           <h3>Comparison with state-of-the-art methods on the R2R-CE and RxR-CE val-unseen splits.</h3>
-          <p>&dagger; and * denote SimpleVLN before and after RL, respectively.</p>
+          <p>This comparison covers navigation accuracy, path efficiency, and observation requirements. SimpleVLN achieves strong performance using only first-person RGB, without task-specific architectural modifications. Consistent gains across backbones support the applicability of the training recipe beyond a single model. &dagger; and * denote results before and after RL, respectively.</p>
           <div class="table-scroll">
             <table>
               <thead>
@@ -299,7 +323,8 @@
 
         <div class="table-block reveal">
           <h3>Comparison with state-of-the-art methods on inference latency and navigation performance.</h3>
-          <p>Latency is measured on R2R-CE using the same NVIDIA A100 GPU, and measures model execution only for one action-chunk decision, excluding preprocessing, environment execution, and other non-model overhead. SimpleVLN uses Qwen3-VL-4B as its backbone.</p>
+          <p>Latency is measured on R2R-CE using the same NVIDIA A100 GPU, and measures model execution only for one action-chunk decision, excluding preprocessing, environment execution, and other non-model overhead. SimpleVLN uses Qwen3-VL-4B as <span class="nowrap">its backbone.</span></p>
+          <p>SimpleVLN combines high navigation success with low model latency. The comparison shows that stronger navigation does not require a slower decision model or additional task-specific architecture.</p>
           <div class="table-scroll">
             <table>
               <thead>
@@ -331,14 +356,16 @@
     <section class="section ablation" id="analysis">
       <div class="section-label">04 — Analysis</div>
       <div class="split-heading">
-        <h2>Each part,<br>in <em>turn.</em></h2>
-        <p>The checks below follow the same three parts as the approach: formulation, data, and optimization.</p>
+        <h2>Navigation<br><em>analysis.</em></h2>
+        <p>We investigate how navigation formulation, data construction, and optimization affect VLN performance. The following experiments use controlled ablations of these <span class="nowrap">three aspects.</span></p>
       </div>
 
       <h3 class="analysis-part">Formulation</h3>
       <div class="table-block reveal">
         <h3>Navigation interface and memory design.</h3>
-        <p>Ablations of action chunking, single-turn navigation, and observation sampling using Qwen3-VL 4B fine-tuned on R2R. The default design of SimpleVLN is shaded.</p>
+        <p><strong>(a) Action chunking.</strong> Action chunking improves navigation performance, supporting it as an effective action-output representation rather than merely a way to reduce model invocation frequency.</p>
+        <p><strong>(b) Single-turn navigation.</strong> Reconstructing each decision from the current observation and sampled visual history performs better than continually accumulating interaction history in multi-turn dialogue. Although multi-turn dialogue can preserve a fuller interaction history, continually appending observations and actions creates an overly long context that current MLLMs cannot effectively exploit for navigation.</p>
+        <p><strong>(c) Observation sampling.</strong> Uniformly sampling global-history observations performs better than sampling only at action-chunk boundaries or retaining all primitive-step observations, favoring compact, uniformly sampled global history over retaining every frame.</p>
         <div class="ablation-grid">
           <table>
             <caption>Action format</caption>
@@ -373,12 +400,14 @@
           <img src="assets/fig4-mem.png" alt="Global memory budget">
           <img src="assets/fig4-mem-local.png" alt="Local memory budget">
         </div>
-        <figcaption><strong>Memory budget.</strong> Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the default configuration.</figcaption>
+        <figcaption><strong>Memory budget.</strong> Effect of global and local memory sizes on R2R-CE val-unseen SR. We vary <i>M</i> with <i>N</i> = 1 (left) and <i>N</i> with <i>M</i> = 8 (right); stars indicate the <span class="nowrap">default configuration.</span></figcaption>
+        <p class="figure-analysis">Excessive global history can introduce redundant or less relevant observations, while adding more local-history frames brings no further improvement. This highlights the importance of selecting useful history rather than simply increasing its size.</p>
       </figure>
 
       <h3 class="analysis-part">Data</h3>
       <div class="table-block reveal">
         <h3>Demonstration and DAgger data on the R2R-CE and RxR-CE val-unseen splits.</h3>
+        <p>This table separates the contribution of broader expert demonstrations from experience collected by the learned policy. Combining demonstration sources improves navigation, but DAgger brings the largest additional gain. Expert routes alone do not cover all states the robot encounters during its own execution; policy-dependent trajectories provide valuable complementary supervision.</p>
         <div class="table-scroll">
           <table>
             <thead>
@@ -400,7 +429,7 @@
 
       <div class="table-block reveal">
         <h3>Synthesized RL data on the R2R-CE and RxR-CE val-unseen splits.</h3>
-        <p>Dataset columns identify the training-scene sources used to synthesize RL episodes.</p>
+        <p>Synthesizing RL tasks from a mixture of R2R, RxR, and ScaleVLN scene pools performs best, suggesting that combining scene sources provides broader training coverage than relying on any single pool.</p>
         <div class="table-scroll">
           <table>
             <thead>
@@ -429,12 +458,14 @@
           <img src="assets/fig5-sr.png" alt="RL success-rate curve">
           <img src="assets/fig5-length.png" alt="RL decision-length curve">
         </div>
-        <figcaption><strong>RL training dynamics.</strong> Overall, rollout reward and evaluation success rate increase, while the average number of action-chunk decisions per trajectory decreases.</figcaption>
+        <figcaption><strong>RL training dynamics.</strong> Rollout reward, validation success, and the average number of action-chunk decisions track how the policy changes during environment interaction.</figcaption>
+        <p class="figure-analysis">As training progresses, rollout reward and evaluation success rate generally increase, while the average number of action-chunk decisions per trajectory decreases.</p>
       </figure>
 
       <div class="table-block reveal">
         <h3>Reward design and RL optimization on the R2R-CE and RxR-CE val-unseen splits with Qwen3-VL 4B.</h3>
-        <p>The SPL reward is zero for failed episodes and equals the ratio of the ground-truth path length to the executed path length for successful episodes; the success reward is binary.</p>
+        <p>Binary task-completion feedback achieves higher success rates on both benchmarks than an SPL-based reward, supporting simple task-completion feedback as an effective RL signal.</p>
+        <p>The evaluated DAPO configuration further improves navigation with binary success rewards. However, since the compared configurations differ in more than the optimizer, the gain cannot be attributed solely to the optimization algorithm.</p>
         <div class="table-scroll">
           <table>
             <thead>
@@ -457,9 +488,8 @@
 
     <section class="citation" id="citation">
       <div class="section">
-        <div class="section-label light">05 — Citation</div>
         <div class="citation-head">
-          <h2>Built simple.<br>Made to <em>advance.</em></h2>
+          <h2>BibTeX</h2>
           <button id="copy-citation" type="button">Copy BibTeX</button>
         </div>
         <pre><code id="bibtex">@article{hong2027simplevln,
@@ -473,12 +503,13 @@
 }</code></pre>
         <footer>
           <a class="wordmark" href="#top"><span>SimpleVLN</span></a>
-          <p>Native MLLMs for frontier vision-language navigation.</p>
+          <p>Adapting native MLLMs to VLN without task-specific architecture.</p>
           <a href="#top">Back to top ↑</a>
         </footer>
       </div>
     </section>
   </main>
-  <script src="script.js"></script>
+  <script src="premium/original.js"></script>
+  <script src="premium/premium.js?v=20261013restore"></script>
 </body>
 </html>

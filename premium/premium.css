@@ -1,0 +1,104 @@
+/* Add interactions to the original page without redesigning its sections. */
+.section-label { font-size: 28px; letter-spacing: .045em; }
+.hero-abstract {
+  width: min(920px, calc(100% - 48px));
+  margin: 64px auto 0;
+  padding: 52px 64px 40px;
+  border: 1px solid #d7d9e9;
+  border-radius: 8px;
+  background: #fafaff;
+  box-shadow: 0 18px 50px #32304d0a;
+  text-align: center;
+}
+.hero-abstract h2 {
+  margin: 0;
+  font-size: 50px;
+  line-height: 1.05;
+}
+.abstract-intro {
+  max-width: 680px;
+  margin: 24px auto 30px;
+  color: #3b4050;
+  font-size: 20px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.abstract-details { max-width: 710px; margin: 0 auto; }
+.abstract-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  color: #5c55b5;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.abstract-details summary::-webkit-details-marker { display: none; }
+.abstract-details summary:hover .abstract-toggle-label { text-decoration: underline; text-underline-offset: 4px; }
+.abstract-toggle-icon { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid #b9b5e4; border-radius: 50%; font: 18px/1 "Nunito", sans-serif; transition: transform .2s ease; }
+.abstract-details[open] .abstract-toggle-icon { transform: rotate(45deg); }
+.abstract-details[open] .abstract-toggle-label { font-size: 0; }
+.abstract-details[open] .abstract-toggle-label::after { content: "Hide the full abstract"; font-size: 14px; }
+.abstract-body { margin-top: 28px; padding-top: 28px; border-top: 1px solid #dfe0ed; animation: abstract-shift .28s ease; }
+@keyframes abstract-shift { from { transform: translateY(-10px); } to { transform: none; } }
+.hero-abstract .abstract-body p {
+  margin: 0 auto 20px;
+  color: var(--muted);
+  font-size: 15.5px;
+  line-height: 1.78;
+  text-align: center;
+  text-wrap: pretty;
+  hyphens: none;
+}
+.hero-abstract .abstract-body strong { color: var(--ink); font-weight: 800; }
+.hero-abstract { transition: transform .28s ease, box-shadow .28s ease; }
+.hero-figure { margin-top: 56px; }
+@media (max-width: 800px) {
+  .hero-abstract { margin-top: 50px; padding: 36px 24px 30px; }
+  .hero-abstract h2 { font-size: 44px; }
+  .abstract-intro { margin: 20px auto 24px; font-size: 18px; }
+  .hero-abstract .abstract-body p { font-size: 15px; }
+}
+.latency p.latency-copy { margin-top: 0; padding-top: 12px; text-align: justify; text-justify: inter-word; }
+.score-grid { align-items: stretch; }
+.score-grid > article { align-self: stretch; height: 100%; }
+.reveal { opacity: 1; transform: none; }
+.motion-ready .reveal, .motion-ready .enter {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.motion-ready .reveal.visible, .motion-ready .enter.visible {
+  opacity: 1;
+  transform: none;
+}
+@media (hover: hover) {
+  .demo-card,
+  .score-grid article,
+  .paper-figure { transition: transform .28s ease, box-shadow .28s ease; }
+  .demo-card:hover,
+  .motion-ready .demo-card.reveal.visible:hover,
+  .score-grid article:hover,
+  .motion-ready .score-grid article.enter.visible:hover,
+  .paper-figure:hover,
+  .motion-ready .paper-figure.reveal.visible:hover,
+  .hero-abstract:hover {
+    transform: translate(-3px, -5px);
+    box-shadow: 10px 12px 0 #e4e1fb;
+  }
+  .nav nav a { transition: color .25s ease; }
+}
+:focus-visible { outline: 2px solid #756ee0; outline-offset: 4px; }
+.latency .model-srs { border-top-color: #e9cfaa; }
+.latency .model-srs li { border-bottom-color: #f0ddc1; color: #665b4b; }
+@media (prefers-reduced-motion: reduce) {
+  .motion-ready .reveal, .motion-ready .enter { opacity: 1; transform: none; transition: none; }
+  .demo-card, .demo-card:hover,
+  .score-grid article, .score-grid article:hover,
+  .paper-figure, .paper-figure:hover,
+  .hero-abstract, .hero-abstract:hover { transition: none; transform: none; }
+  .demo-card, .demo-card:hover { box-shadow: 6px 7px 0 #e4e1fb; }
+  .abstract-body { animation: none; }
+}
