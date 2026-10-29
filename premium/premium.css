@@ -61,6 +61,7 @@
 .hero-actions .button.arxiv { color: var(--ink); background: linear-gradient(115deg, #d9eaff, #eee4ff); border-color: #c9d4ef; }
 .hero-actions .button.github { color: var(--paper); background: linear-gradient(115deg, #17191d, #3a3558); border-color: #17191d; }
 .hero-actions .button.models { color: var(--ink); background: linear-gradient(115deg, #eee4ff, #ffe5d1); border-color: #ddd4ea; }
+.hero-actions .button.datasets { color: var(--ink); background: linear-gradient(115deg, #ffe5d1, #fff6ea); border-color: #efc58e; }
 .hero-actions .button.is-quiet { cursor: default; }
 .hero-figure { margin-top: 56px; }
 @media (max-width: 800px) {
